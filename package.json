@@ -1,0 +1,17 @@
+{
+  "name": "buubot2",
+  "version": "1.0.0",
+  "description": "A qq bot based on mirai",
+  "main": "index.js",
+  "repository": "git@github.com:Yoshino-s/buubot2.git",
+  "author": "Yoshino-s <yoshino.prog@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "init": "node scripts/init.js"
+  },
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "inquirer": "^7.3.2"
+  }
+}

@@ -1,0 +1,7 @@
+host: '0.0.0.0'
+port: 8080
+authKey: 1234567890
+cacheSize: 4096
+enableWebsocket: false
+cors: 
+  - '*'
