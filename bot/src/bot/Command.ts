@@ -1,5 +1,5 @@
 import { MiraiBot } from "./Bot";
-import { Storage } from "./utils";
+import { Storage, parseMessage } from "./utils";
 import { Contact, MessageType } from "mirai-ts";
 
 type Rule = "off" | "on" | "admin";
@@ -82,10 +82,10 @@ export default class MiraiBotCommand {
       return;
     }
     const res = await this.hook(msg, cmd, args);
-    if (res === false) {
-      await msg.reply(this.help);
+    if (res === MiraiBotCommand.HelpSymbol) {
+      await msg.reply(parseMessage(this.help));
     } else if (res !== undefined) {
-      await msg.reply(res);
+      await msg.reply(parseMessage(res));
     }
   }
   get help(): string {
@@ -99,5 +99,5 @@ export default class MiraiBotCommand {
     return true;
   }
 
-  static readonly help = Symbol("help");
+  static readonly HelpSymbol = Symbol("help");
 }
