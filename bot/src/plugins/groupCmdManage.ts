@@ -5,7 +5,7 @@ export default function GroupCmdManagePlugin(bot: MiraiBot) {
   bot.registerCommand(
     {
       cmd: "GroupCmd",
-      help: `Usage: GroupCmd list | (set {cmd} {rule})
+      help: `GroupCmd list | (set {cmd} {rule})
 Rule:
  * 0b00000001 friend
  * 0b00000010 group member

@@ -6,6 +6,7 @@ import RankPlugin from "./plugins/rank";
 import GroupCmdManagePlugin from "./plugins/groupCmdManage";
 import CalendarPlugin from "./plugins/calendar";
 import RepeaterPlugin from "./plugins/repeater";
+import MonitorPlugin from "./plugins/monitor";
 
 const bot = new MiraiBot(Config.APIConfig, Config.BotConfig);
 
@@ -15,7 +16,8 @@ bot.registerPlugins(
   RankPlugin,
   GroupCmdManagePlugin,
   CalendarPlugin,
-  RepeaterPlugin
+  RepeaterPlugin,
+  MonitorPlugin
 );
 
 bot.registerCommand({ cmd: "不色的图" }, () => {

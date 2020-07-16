@@ -118,8 +118,9 @@ export default class MiraiBotCommand {
   }
   get help(): string {
     return (
-      this.config.help ||
-      "Usage: " + this.bot.config.commandPrefix + this.config.cmd
+      "Usage: " +
+      this.bot.config.commandPrefix +
+      (this.config.help || this.config.cmd)
     );
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

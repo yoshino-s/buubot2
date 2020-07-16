@@ -25,19 +25,43 @@ export default function CalendarPlugin(bot: MiraiBot) {
   bot.registerCommand(
     {
       cmd: "calendar",
+      help: "calendar [today|recent(default))]",
+      verify: (msg, cmd, args) => !args || ["today", "recent"].includes(args),
     },
-    async () => {
+    async (msg, cmd, args) => {
       const d = (
         await Axios.get("https://api.yoshino-s.online/calendar/recent")
       ).data as Event[];
-      return d
-        .map(
-          (d) =>
-            `${d.name}:\n${d.website}\n开始时间:${format(
-              dayjs(d.start).utcOffset(8)
-            )}\n结束时间:${format(dayjs(d.end).utc().utcOffset(8))}`
-        )
-        .join("\n\n");
+      if (!args || args === "recent") {
+        return (
+          "近期的比赛有:\n" +
+          d
+            .map(
+              (d) =>
+                `${d.name}:\n${d.website}\n开始时间:${format(
+                  dayjs(d.start).utcOffset(8)
+                )}\n结束时间:${format(dayjs(d.end).utc().utcOffset(8))}`
+            )
+            .join("\n\n")
+        );
+      } else {
+        return (
+          "现在正在举办的的比赛有:\n" +
+          d
+            .filter(
+              (d) =>
+                new Date(d.start).getTime() <= Date.now() &&
+                Date.now() <= new Date(d.end).getTime()
+            )
+            .map(
+              (d) =>
+                `${d.name}:\n${d.website}\n开始时间:${format(
+                  dayjs(d.start).utcOffset(8)
+                )}\n结束时间:${format(dayjs(d.end).utc().utcOffset(8))}`
+            )
+            .join("\n\n")
+        );
+      }
     }
   );
 }

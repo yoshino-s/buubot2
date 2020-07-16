@@ -4,7 +4,7 @@ export default function CmdPlugin(bot: MiraiBot) {
   bot.registerCommand(
     {
       cmd: "exec",
-      help: "Usage: exec cmd",
+      help: "exec cmd",
       verify: (msg, cmd, args) => !!args,
     },
     async (msg, cmd, args) => {

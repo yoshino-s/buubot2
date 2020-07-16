@@ -2,6 +2,7 @@ import Mirai, { MiraiApiHttpConfig, MessageType } from "mirai-ts";
 import MiraiBotCommand, { MiraiBotCommandConfig } from "./Command";
 import { CmdHook } from "./Command";
 import * as utils from "./utils";
+import { unserialize } from "./serialization";
 
 export interface MiraiBotConfig {
   account: number;

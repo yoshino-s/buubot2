@@ -36,7 +36,7 @@ export default function RankPlugin(bot: MiraiBot) {
   bot.registerCommand(
     {
       cmd: "score",
-      help: "Usage: score id",
+      help: "score id",
       verify: (msg, cmd, args) => !!args,
     },
     async (msg, cmd, args) => {
