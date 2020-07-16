@@ -22,7 +22,6 @@ export default function RankPlugin(bot: MiraiBot) {
     {
       cmd: "rank",
       help: "Usage: rank id",
-      group: true,
       verify: (msg, cmd, args) => !!args,
     },
     async (msg, cmd, args) =>
@@ -38,7 +37,6 @@ export default function RankPlugin(bot: MiraiBot) {
     {
       cmd: "score",
       help: "Usage: score id",
-      group: true,
       verify: (msg, cmd, args) => !!args,
     },
     async (msg, cmd, args) => {

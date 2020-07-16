@@ -25,7 +25,6 @@ export default function CalendarPlugin(bot: MiraiBot) {
   bot.registerCommand(
     {
       cmd: "calendar",
-      group: true,
     },
     async () => {
       const d = (

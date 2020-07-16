@@ -1,9 +1,10 @@
 import { MiraiBot } from "../bot/Bot";
+import { serialize } from "../bot/serialization";
 export default function RepeaterPlugin(bot: MiraiBot) {
   const msgSet = new Map<number, [string, number]>();
   bot.mirai.on("message", (msg) => {
     if (msg.type === "FriendMessage") return;
-    const plain = msg.plain;
+    const plain = serialize(msg.messageChain);
     const p = msgSet.get(msg.sender.group.id) ?? [plain, 0];
     if (p[0] === plain) {
       p[1]++;
@@ -11,7 +12,6 @@ export default function RepeaterPlugin(bot: MiraiBot) {
       p[0] = plain;
       p[1] = 1;
     }
-    console.log(p);
     if (p[1] === 3) {
       msg.reply(msg.messageChain);
     }

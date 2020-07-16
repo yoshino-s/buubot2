@@ -6,7 +6,6 @@ export default function CmdPlugin(bot: MiraiBot) {
       cmd: "exec",
       help: "Usage: exec cmd",
       verify: (msg, cmd, args) => !!args,
-      group: true,
     },
     async (msg, cmd, args) => {
       try {

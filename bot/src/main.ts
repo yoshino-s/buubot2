@@ -1,5 +1,5 @@
 import { MiraiBot } from "./bot/Bot";
-import Config from "./config.example";
+import Config from "./config";
 import CmdPlugin from "./plugins/cmd";
 import EggPlugin from "./plugins/egg";
 import RankPlugin from "./plugins/rank";
@@ -18,8 +18,8 @@ bot.registerPlugins(
   RepeaterPlugin
 );
 
-bot.registerCommand({ cmd: "不色的图", group: true }, () => {
-  return "不色的图来啦\n[img:https://api.yoshino-s.online/random]";
+bot.registerCommand({ cmd: "不色的图" }, () => {
+  return "不色的图来啦\n[[Image:url=https://api.yoshino-s.online/random]]";
 });
 
 async function bootstrap() {

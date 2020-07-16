@@ -1,18 +1,32 @@
 import { MiraiBot } from "./Bot";
-import { Storage, parseMessage } from "./utils";
-import { Contact, MessageType } from "mirai-ts";
+import { Storage } from "./utils";
+import { MessageType } from "mirai-ts";
+import { unserialize } from "./serialization";
 
-type Rule = "off" | "on" | "admin";
+/**
+ * 0b00000001 friend
+ * 0b00000010 group member
+ * 0b00000100 group admin
+ * 0b00001000 group owner
+ * 0b00010000 temp chat
+ */
+export enum CommandPermission {
+  friend = 0b00000001,
+  group = 0b00001110,
+  member = 0b00000010,
+  admin = 0b00001100,
+  administrator = 0b00000100,
+  owner = 0b00001000,
+  temp = 0b00010000,
+}
 
 export interface MiraiBotCommandConfig {
   cmd: string;
-  mustGroup?: boolean;
-  group?: boolean | "must";
-  permission?: Contact.Permission[];
+  rule?: CommandPermission;
   alias?: string[] | string;
   help?: string;
   verify?: (msg: MessageType.ChatMessage, cmd: string, args: string) => boolean;
-  specialRule?: Record<string, Rule>;
+  specialRule?: Record<string, CommandPermission>;
 }
 
 export type CmdHook = (
@@ -24,7 +38,7 @@ export type CmdHook = (
 export default class MiraiBotCommand {
   config: MiraiBotCommandConfig;
   hook: CmdHook;
-  specialRules: Storage<Record<string, Rule>>;
+  specialRules: Storage<Record<string, CommandPermission>>;
   constructor(
     private readonly bot: MiraiBot,
     cmd: string | MiraiBotCommandConfig,
@@ -39,53 +53,67 @@ export default class MiraiBotCommand {
       if (cmd.verify) this.verifyArgs = cmd.verify;
     }
     this.hook = hook;
-    this.specialRules = new Storage<Record<string, Rule>>(
+    this.specialRules = new Storage(
       this.config.cmd,
       this.config.specialRule || {}
     );
   }
 
-  rule(groupId: number, rule: Rule) {
+  setRule(groupId: number, rule: CommandPermission) {
     const rules = this.specialRules.get() || {};
     rules[groupId.toString()] = rule;
     this.specialRules.set(rules);
+  }
+
+  getRule(groupId?: number): CommandPermission {
+    return (
+      (groupId && this.specialRules.get()[groupId.toString()]) ||
+      this.config.rule ||
+      CommandPermission.friend |
+        CommandPermission.group |
+        CommandPermission.temp
+    );
   }
 
   async run(msg: MessageType.ChatMessage, cmd: string, args: string) {
     if (cmd !== this.config.cmd && !this.config.alias?.includes(cmd)) {
       return;
     }
-    if (this.config.group === "must" && msg.type !== "GroupMessage") {
-      return;
-    }
-    if (msg.type === "GroupMessage" && !this.config.group) {
-      return;
-    }
-    if (msg.type !== "FriendMessage") {
-      if (
-        this.config.permission &&
-        !this.config.permission.includes(msg.sender.permission)
-      ) {
+    if (msg.sender.id !== this.bot.config.privilege) {
+      const rule = this.getRule(
+        msg.type !== "FriendMessage" ? msg.sender.group.id : undefined
+      );
+      if (msg.type === "FriendMessage" && !(rule & CommandPermission.friend))
         return;
+      if (msg.type === "GroupMessage") {
+        if (
+          msg.sender.permission === "MEMBER" &&
+          !(rule & CommandPermission.member)
+        )
+          return;
+        if (
+          msg.sender.permission === "ADMINISTRATOR" &&
+          !(rule & CommandPermission.administrator)
+        )
+          return;
+        if (
+          msg.sender.permission === "OWNER" &&
+          !(rule & CommandPermission.owner)
+        )
+          return;
       }
-      const r = this.specialRules.get()[msg.sender.group.id.toString()];
-      if (r === "off") {
+      if (msg.type === "TempMessage" && !(rule & CommandPermission.temp))
         return;
-      }
-      if (r === "admin" && msg.sender.group.permission === "MEMBER") {
-        return;
-      }
     }
-
     if (!this.verifyArgs(msg, cmd, args)) {
       await msg.reply(this.help);
       return;
     }
     const res = await this.hook(msg, cmd, args);
     if (res === MiraiBotCommand.HelpSymbol) {
-      await msg.reply(parseMessage(this.help));
+      await msg.reply(unserialize(this.help));
     } else if (res !== undefined) {
-      await msg.reply(parseMessage(res));
+      await msg.reply(unserialize(res));
     }
   }
   get help(): string {

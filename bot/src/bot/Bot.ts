@@ -6,6 +6,7 @@ import * as utils from "./utils";
 export interface MiraiBotConfig {
   account: number;
   commandPrefix: string;
+  privilege?: number;
 }
 
 export class MiraiBot {
