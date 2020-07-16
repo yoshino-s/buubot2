@@ -9,8 +9,8 @@ services:
     volumes: 
       - ./mirai/config.txt:/app/config.txt
       - ./mirai/setting.yml:/app/plugins/MiraiAPIHTTP/setting.yml
-      - ./mirai/data:/app/data
-      - ./mirai/images:/app/plugins/MiraiAPIHTTP/images
+      - ./data/mirai_data:/app/data
+      - ./data/mirai_image:/app/plugins/MiraiAPIHTTP/images
   bot:
     build: ./bot/deploy
     container_name: mirai_bot
@@ -24,4 +24,5 @@ services:
       - DATA_STORAGE_PATH=/app/data
       - API_AUTH_KEY=1234567890
     volumes: 
-      - ./mirai/images:/app/images
+      - ./data/mirai_image:/app/images
+      - ./data/bot_data:/app/data
