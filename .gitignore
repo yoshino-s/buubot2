@@ -5,7 +5,6 @@ yarn.lock
 node_modules
 dist
 bot/deploy/src/*
-bot/data/*
 
 mirai/images/*
 
@@ -13,3 +12,4 @@ mirai/config.txt
 bot/src/config.ts
 mirai/setting.yml
 docker-compose.yml
+data/*
