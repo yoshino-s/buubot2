@@ -41,12 +41,14 @@ export default function MonitorPlugin(bot: MiraiBot) {
     npmMonitorNewest.set(d[0].id);
     const msg =
       "Newest npm advisories:\n" +
-      d.map(
-        (v) =>
-          `${v.title} on ${v.module_name}\nseverity: ${v.severity}\n${
-            v.cves.length ? "CVE:" + v.cves.join(",") + "\n" : ""
-          }URL: https://www.npmjs.com/advisories/${v.id}`
-      );
+      d
+        .map(
+          (v) =>
+            `${v.title} on ${v.module_name}\nseverity: ${v.severity}\n${
+              v.cves.length ? "CVE:" + v.cves.join(",") + "\n" : ""
+            }URL: https://www.npmjs.com/advisories/${v.id}`
+        )
+        .join("\n\n");
     console.log(msg);
     npmMonitorStorage.get().forEach((v) => {
       if (v.startsWith("friend_")) {
