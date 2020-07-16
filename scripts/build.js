@@ -1,10 +1,6 @@
 'use strict';
-const inquirer = require('inquirer');
 const chalk = require("chalk");
 const child_process = require("child_process");
-const fs = require("fs");
-const path = require("path");
-const { exit } = require('process');
 
 async function main() {
   console.log(chalk.blue("Building"));

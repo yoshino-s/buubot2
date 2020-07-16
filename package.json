@@ -9,10 +9,41 @@
   "private": true,
   "scripts": {
     "init": "node scripts/init.js",
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.MD -s"
   },
   "dependencies": {
     "chalk": "^4.1.0",
     "inquirer": "^7.3.2"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^9.1.1",
+    "@commitlint/config-conventional": "^9.1.1",
+    "conventional-changelog-cli": "^2.0.34",
+    "cz-conventional-changelog": "3.2.0",
+    "husky": "^4.2.5",
+    "standard-version": "^8.0.2"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "standard-version": {
+    "bumpFiles": [
+      "package.json",
+      "bot/package.json"
+    ],
+    "header": "# Changelog\n\n"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   }
 }
