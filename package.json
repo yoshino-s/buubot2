@@ -1,6 +1,6 @@
 {
   "name": "buubot2",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A qq bot based on mirai",
   "main": "index.js",
   "repository": "git@github.com:Yoshino-s/buubot2.git",

@@ -1,6 +1,6 @@
 {
   "name": "buubot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A quick qq bot for mirai.",
   "private": true,
   "main": "src/main.ts",
