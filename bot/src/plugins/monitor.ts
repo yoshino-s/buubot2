@@ -64,7 +64,7 @@ export default function MonitorPlugin(bot: MiraiBot) {
     });
   };
 
-  schedule.scheduleJob("npm_monitor", "0 * * * *", sendNPMInfo);
+  schedule.scheduleJob("npm_monitor", "*/10 * * * *", sendNPMInfo);
 
   sendNPMInfo();
 
