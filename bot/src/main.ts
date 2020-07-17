@@ -1,5 +1,5 @@
 import { MiraiBot } from "./bot/Bot";
-import Config from "./config";
+import Config from "./config.json";
 import CmdPlugin from "./plugins/cmd";
 import EggPlugin from "./plugins/egg";
 import RankPlugin from "./plugins/rank";
@@ -8,7 +8,7 @@ import CalendarPlugin from "./plugins/calendar";
 import RepeaterPlugin from "./plugins/repeater";
 import MonitorPlugin from "./plugins/monitor";
 
-const bot = new MiraiBot(Config.APIConfig, Config.BotConfig);
+const bot = new MiraiBot(Config.API, Config.Bot);
 
 bot.registerPlugins(
   CmdPlugin,

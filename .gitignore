@@ -9,7 +9,7 @@ bot/deploy/src/*
 mirai/images/*
 
 mirai/config.txt
-bot/src/config.ts
+bot/src/config.json
 mirai/setting.yml
 docker-compose.yml
 data/*

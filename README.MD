@@ -32,14 +32,13 @@ A BUUOJ BOT rebuild on mirai (Developing)
 
 ## Start
 
-### Build
+### Config & build
 
 ```bash
 yarn
-yarn run init
+yarn run config
+yarn run build
 ```
-
-Finish the configuration
 
 ### Start
 

@@ -1,0 +1,22 @@
+{
+  "API": {
+    "host": "127.0.0.1",
+    "port": 8081,
+    "authKey": "1234567890",
+    "enableWebsocket": true
+  },
+  "Bot": {
+    "account": 0,
+    "commandPrefix": "/",
+    "privilege": 0
+  },
+  "Utils": {
+    "dataStorage":  "/app/data",
+    "imageStorage": "/app/images"
+  },
+  "Proxy": {
+    "protocol": "",
+    "host": "",
+    "port": 8080
+  }
+}

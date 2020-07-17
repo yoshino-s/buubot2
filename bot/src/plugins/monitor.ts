@@ -35,7 +35,6 @@ export default function MonitorPlugin(bot: MiraiBot) {
         },
       })
     ).data.advisoriesData.objects as NPMAdvisoriesObject[];
-    console.log(d);
     d = d.filter((v) => v.id > npmMonitorNewest.get());
     if (!d.length) return;
     npmMonitorNewest.set(d[0].id);
@@ -49,7 +48,6 @@ export default function MonitorPlugin(bot: MiraiBot) {
             }URL: https://www.npmjs.com/advisories/${v.id}`
         )
         .join("\n\n");
-    console.log(msg);
     npmMonitorStorage.get().forEach((v) => {
       if (v.startsWith("friend_")) {
         const id = Number(v.slice(7));

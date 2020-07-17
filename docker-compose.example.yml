@@ -4,9 +4,9 @@ services:
     build: ./mirai
     container_name: mirai
     restart: always
-    ports: 
+    ports:
       - 8081:8080
-    volumes: 
+    volumes:
       - ./mirai/config.txt:/app/config.txt
       - ./mirai/setting.yml:/app/plugins/MiraiAPIHTTP/setting.yml
       - ./data/mirai_data:/app/data
@@ -15,14 +15,8 @@ services:
     build: ./bot/deploy
     container_name: mirai_bot
     restart: always
-    depends_on: 
+    depends_on:
       - mirai
-    environment: 
-      - API_HOST=mirai
-      - API_PORT=8080
-      - IMAGE_PATH=/app/images
-      - DATA_STORAGE_PATH=/app/data
-      - API_AUTH_KEY=1234567890
-    volumes: 
+    volumes:
       - ./data/mirai_image:/app/images
       - ./data/bot_data:/app/data

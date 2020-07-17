@@ -49,6 +49,5 @@ export function unserialize(msg: string): MessageType.MessageChain {
       type: "Plain",
       text: raw,
     });
-  console.log(parts);
   return parts;
 }

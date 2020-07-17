@@ -8,13 +8,14 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "init": "node scripts/init.js",
-    "build": "node scripts/build.js",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.MD -s"
+    "postinstall": "node scripts/check.js",
+    "config": "node scripts/config.js",
+    "build": "node scripts/build.js"
   },
   "dependencies": {
     "chalk": "^4.1.0",
-    "inquirer": "^7.3.2"
+    "inquirer": "^7.3.2",
+    "socks-proxy-agent": "^5.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^9.1.1",

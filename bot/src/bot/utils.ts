@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync, copyFileSync } from "fs";
 import { join } from "path";
-import Config from "../config";
+import Config from "../config.json";
 import { createHash, randomBytes } from "crypto";
 
 export function saveImage(p: string): string {
@@ -8,8 +8,6 @@ export function saveImage(p: string): string {
   copyFileSync(p, f);
   return f;
 }
-
-console.log(Config.Utils.dataStorage);
 
 export class Storage<T> {
   private data: T;
