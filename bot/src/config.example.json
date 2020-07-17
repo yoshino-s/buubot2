@@ -1,7 +1,7 @@
 {
   "API": {
-    "host": "127.0.0.1",
-    "port": 8081,
+    "host": "mirai",
+    "port": 8080,
     "authKey": "1234567890",
     "enableWebsocket": true
   },
