@@ -7,7 +7,7 @@ function similarity(s0: string, s1: string) {
     diffChars(s0, s1).reduce(
       (p, c) => (!(c.added || c.removed) ? p + c.value.length : p),
       0
-    ) / Math.max(s0.length + s1.length)
+    ) / Math.max(s0.length, s1.length)
   );
 }
 export default function RepeaterPlugin(bot: MiraiBot) {

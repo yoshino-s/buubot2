@@ -34,8 +34,12 @@ A BUUOJ BOT rebuild on mirai (Developing)
 
 ### Config & build
 
+If you don't have yarn, install it by `npm install -g yarn`, (or change script by yourself.
+
 ```bash
 yarn
+# or use production mode if you only want to deploy it
+# yarn --production
 yarn run config
 yarn run build
 ```
