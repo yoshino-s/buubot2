@@ -1,5 +1,6 @@
 import { MiraiBot } from "../bot/Bot";
 import { VM } from "vm2";
+import { preventGroupMessageRecall } from "./recallMonitor";
 export default function CmdPlugin(bot: MiraiBot) {
   bot.registerCommand(
     {
@@ -8,6 +9,7 @@ export default function CmdPlugin(bot: MiraiBot) {
       verify: (msg, cmd, args) => !!args,
     },
     async (msg, cmd, args) => {
+      if (msg.type === "GroupMessage") preventGroupMessageRecall(msg);
       try {
         const vm = new VM({
           timeout: 2000,

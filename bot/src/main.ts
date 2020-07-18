@@ -7,6 +7,8 @@ import GroupCmdManagePlugin from "./plugins/groupCmdManage";
 import CalendarPlugin from "./plugins/calendar";
 import RepeaterPlugin from "./plugins/repeater";
 import MonitorPlugin from "./plugins/monitor";
+import RecallMonitorPlugin from "./plugins/recallMonitor";
+import { preventGroupMessageRecall } from "./plugins/recallMonitor";
 
 const bot = new MiraiBot(Config.API, Config.Bot);
 
@@ -17,10 +19,12 @@ bot.registerPlugins(
   GroupCmdManagePlugin,
   CalendarPlugin,
   RepeaterPlugin,
-  MonitorPlugin
+  MonitorPlugin,
+  RecallMonitorPlugin
 );
 
-bot.registerCommand({ cmd: "不色的图" }, () => {
+bot.registerCommand({ cmd: "不色的图" }, (msg) => {
+  if (msg.type === "GroupMessage") preventGroupMessageRecall(msg);
   return "不色的图来啦\n[[Image:url=https://api.yoshino-s.online/random]]";
 });
 

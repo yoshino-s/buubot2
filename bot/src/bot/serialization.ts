@@ -37,7 +37,7 @@ export function unserialize(msg: string): MessageType.MessageChain {
     if (raw)
       parts.push({
         type: "Plain",
-        text: raw,
+        text: decodeURIComponent(raw),
       });
     idx = i + r.length;
     parts.push(parse(r.slice(2, -2)));
@@ -47,7 +47,7 @@ export function unserialize(msg: string): MessageType.MessageChain {
   if (raw)
     parts.push({
       type: "Plain",
-      text: raw,
+      text: decodeURIComponent(raw),
     });
   return parts;
 }

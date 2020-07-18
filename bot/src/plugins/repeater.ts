@@ -1,6 +1,8 @@
 import { MiraiBot } from "../bot/Bot";
-import { serialize } from "../bot/serialization";
+import { serialize, unserialize } from "../bot/serialization";
 import { diffChars } from "diff";
+import { Storage } from "../bot/utils";
+import { CommandPermission } from "../bot/Command";
 
 function similarity(s0: string, s1: string) {
   return (
@@ -27,5 +29,40 @@ export default function RepeaterPlugin(bot: MiraiBot) {
       msg.reply(msg.messageChain);
     }
     msgSet.set(msg.sender.group.id, p);
+  });
+
+  const preventFlashImage = new Storage<number[]>("preventFlashImage", []);
+
+  bot.registerCommand(
+    {
+      cmd: "preventFlashImage",
+      help: "preventFlashImage on|off",
+      rule: CommandPermission.admin,
+      verify: (msg, cmd, args) => ["on", "off"].includes(args),
+    },
+    (msg, cmd, args) => {
+      if (msg.type !== "GroupMessage") return;
+      const l = new Set(preventFlashImage.get());
+      if (args === "on") {
+        l.add(msg.sender.group.id);
+      } else {
+        l.delete(msg.sender.group.id);
+      }
+      preventFlashImage.set(Array.from(l));
+      return "OK";
+    }
+  );
+
+  bot.mirai.on("GroupMessage", (msg) => {
+    if (preventFlashImage.get().includes(msg.sender.group.id))
+      msg.messageChain.forEach((m) => {
+        if (m.type === "FlashImage") {
+          msg.reply(
+            unserialize(
+              `${msg.sender.memberName}发了一张闪照:\n[[Image:imageId=${m.imageId}]]`
+            )
+          );
+        }
+      });
   });
 }
