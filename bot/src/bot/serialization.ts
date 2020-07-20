@@ -3,6 +3,7 @@ import { MessageType } from "mirai-ts";
 const e = (o: Record<string, any>) => {
   const u = new URLSearchParams(o);
   u.delete("type");
+  u.delete("origin"); // remove origin of Quote
   return u.toString();
 };
 

@@ -1,5 +1,5 @@
 import { MiraiBot } from "./Bot";
-import { Storage } from "./utils";
+import { Storage, ContactSet } from "./utils";
 import { MessageType } from "mirai-ts";
 import { unserialize } from "./serialization";
 
@@ -129,4 +129,28 @@ export default class MiraiBotCommand {
   }
 
   static readonly HelpSymbol = Symbol("help");
+}
+
+export class SwitchCommand extends MiraiBotCommand {
+  set: ContactSet;
+  constructor(bot: MiraiBot, cmd: string, set: ContactSet) {
+    super(
+      bot,
+      {
+        cmd,
+        help: `${cmd} on|off`,
+        rule: CommandPermission.admin | CommandPermission.friend,
+        verify: (msg, cmd, args) => ["on", "off"].includes(args),
+      },
+      (msg: MessageType.ChatMessage, cmd: string, args: string) => {
+        if (args === "on") {
+          this.set.add(msg);
+        } else {
+          this.set.delete(msg);
+        }
+        return "OK";
+      }
+    );
+    this.set = set;
+  }
 }

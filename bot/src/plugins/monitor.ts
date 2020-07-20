@@ -1,7 +1,8 @@
 import { MiraiBot } from "../bot/Bot";
 import Axios from "axios";
 import schedule from "node-schedule";
-import { Storage } from "../bot/utils";
+import { Storage, ContactSet } from "../bot/utils";
+import { SwitchCommand } from "../bot/Command";
 
 type NPMAdvisoriesObject = {
   id: number;
@@ -23,7 +24,7 @@ type NPMAdvisoriesObject = {
   cwe: string;
 };
 export default function MonitorPlugin(bot: MiraiBot) {
-  const npmMonitorStorage = new Storage<string[]>("npmMonitor", []);
+  const npmMonitorStorage = new ContactSet("npmMonitor");
 
   const npmMonitorNewest = new Storage<number>("npmMonitorNewest", 0);
 
@@ -48,17 +49,13 @@ export default function MonitorPlugin(bot: MiraiBot) {
             }URL: https://www.npmjs.com/advisories/${v.id}`
         )
         .join("\n\n");
-    npmMonitorStorage.get().forEach((v) => {
-      if (v.startsWith("friend_")) {
-        const id = Number(v.slice(7));
-        bot.mirai.api.sendFriendMessage(msg, id);
-      } else if (v.startsWith("group_")) {
-        const id = Number(v.slice(6));
-        bot.mirai.api.sendGroupMessage(msg, id);
-      } else if (v.startsWith("temp_")) {
-        const [id, group] = v.slice(5).split("_").map(Number);
-        bot.mirai.api.sendTempMessage(msg, id, group);
+    npmMonitorStorage.list().forEach((v) => {
+      if (v.group) {
+        bot.mirai.api.sendGroupMessage(msg, v.group);
+      } else if (v.temp) {
+        bot.mirai.api.sendTempMessage(msg, v.id, v.temp);
       }
+      bot.mirai.api.sendFriendMessage(msg, v.id);
     });
   };
 
@@ -66,32 +63,5 @@ export default function MonitorPlugin(bot: MiraiBot) {
 
   sendNPMInfo();
 
-  bot.registerCommand(
-    {
-      cmd: "npm_monitor",
-      help: "npm_monitor on|off",
-      verify: (msg, cmd, args) => ["on", "off"].includes(args),
-    },
-    async (msg, cmd, args) => {
-      let id = "";
-      switch (msg.type) {
-        case "FriendMessage":
-          id = `friend_${msg.sender.id}`;
-          break;
-        case "GroupMessage":
-          id = `group_${msg.sender.group.id}`;
-          break;
-        case "TempMessage":
-          id = `temp_${msg.sender.group.id}_${msg.sender.id}`;
-      }
-      const r = new Set(npmMonitorStorage.get());
-      if (args === "on") {
-        r.add(id);
-      } else {
-        r.delete(id);
-      }
-      npmMonitorStorage.set(Array.from(r));
-      return "OK";
-    }
-  );
+  bot.cmdHooks.add(new SwitchCommand(bot, "npm_monitor", npmMonitorStorage));
 }
