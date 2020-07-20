@@ -2,6 +2,7 @@ import { MiraiBot } from "../bot/Bot";
 import { scheduleJob } from "node-schedule";
 import { ContactSet } from "../bot/utils";
 import { SwitchCommand } from "../bot/Command";
+
 export default function GreetPlugin(bot: MiraiBot) {
   const greetList = new ContactSet("greetList");
   let nextGreet = "";
@@ -16,12 +17,23 @@ export default function GreetPlugin(bot: MiraiBot) {
   bot.cmdHooks.add(new SwitchCommand(bot, "greet", greetList));
   bot.registerCommand(
     {
-      cmd: "setNextGreet",
-      help: "setNextGreet msg",
+      cmd: "nextGreet",
+      help: "nextGreet msg",
       rule: 0,
     },
     (msg, cmd, args) => {
       return `Set to ${(nextGreet = args)}`;
+    }
+  );
+  bot.registerCommand(
+    {
+      cmd: "greet",
+      help: "greet msg",
+      rule: 0,
+    },
+    (msg, cmd, args) => {
+      greetList.sendAll(bot, args);
+      return `Send ${(nextGreet = args)}`;
     }
   );
 }
