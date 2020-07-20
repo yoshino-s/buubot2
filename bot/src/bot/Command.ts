@@ -113,7 +113,7 @@ export default class MiraiBotCommand {
     if (res === MiraiBotCommand.HelpSymbol) {
       await msg.reply(unserialize(this.help));
     } else if (res !== undefined) {
-      await msg.reply(unserialize(res));
+      await msg.reply(unserialize(String(res)));
     }
   }
   get help(): string {

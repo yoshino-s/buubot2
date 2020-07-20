@@ -30,10 +30,11 @@ function parse(s: string): MessageType.SingleMessage {
   return o;
 }
 
-export function unserialize(msg: string): MessageType.MessageChain {
+export function unserialize(msg: any): MessageType.MessageChain {
   let idx = 0;
+  const message = String(msg);
   const parts: MessageType.MessageChain = [];
-  msg.replace(codeRegexp, (r, i) => {
+  message.replace(codeRegexp, (r, i) => {
     const raw = msg.slice(idx, i);
     if (raw)
       parts.push({
@@ -44,7 +45,7 @@ export function unserialize(msg: string): MessageType.MessageChain {
     parts.push(parse(r.slice(2, -2)));
     return "";
   });
-  const raw = msg.slice(idx, msg.length);
+  const raw = message.slice(idx, msg.length);
   if (raw)
     parts.push({
       type: "Plain",
