@@ -89,8 +89,8 @@ export class ContactSet {
     return Promise.all(
       Array.from((this.set = new Set(this.storage.get()))).map((v: string) => {
         if (v.startsWith("group_")) {
-          const [id, group] = v.slice(6).split("_").map(Number);
-          return bot.mirai.api.sendGroupMessage(message, id, group);
+          const [, group] = v.slice(6).split("_").map(Number);
+          return bot.mirai.api.sendGroupMessage(message, group);
         } else if (v.startsWith("temp_")) {
           const [id, group] = v.slice(5).split("_").map(Number);
           return bot.mirai.api.sendTempMessage(message, id, group);
