@@ -27,8 +27,8 @@ export default function GreetPlugin(bot: MiraiBot) {
   );
   bot.registerCommand(
     {
-      cmd: "greet",
-      help: "greet msg",
+      cmd: "greetMsg",
+      help: "greetMsg msg",
       rule: 0,
     },
     (msg, cmd, args) => {
