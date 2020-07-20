@@ -5,7 +5,7 @@ export default function GroupCmdManagePlugin(bot: MiraiBot) {
   bot.registerCommand(
     {
       cmd: "GroupCmd",
-      help: `GroupCmd list | (set {cmd} {rule})
+      help: `GroupCmd list | (set {cmd} {rule}) | mute
 Rule:
  * 0b00000001 friend
  * 0b00000010 group member
@@ -37,6 +37,10 @@ Rule:
             )
             .join("\n")
         );
+      else if (args === "mute") {
+        c.forEach((c) => c.setRule(id, 0));
+        return "Mute all cmd";
+      }
       const r = args.split(" ");
       const command = c.find((i) => i.config.cmd === r[1]);
       if (!command) return `Command ${r[1]} not found.`;
