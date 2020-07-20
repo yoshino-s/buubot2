@@ -25,7 +25,7 @@ bot.registerPlugins(
 
 bot.registerCommand({ cmd: "不色的图" }, (msg) => {
   if (msg.type === "GroupMessage") preventGroupMessageRecall(msg);
-  return "不色的图来啦\n[[Image:url=https://api.yoshino-s.online/random]]";
+  return "不色的图来啦\n[[Image:url=https://pixiv.yoshino-s.workers.dev/random]]";
 });
 
 async function bootstrap() {
