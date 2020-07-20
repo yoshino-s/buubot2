@@ -10,10 +10,11 @@ export default function GreetPlugin(bot: MiraiBot) {
     await greetList.sendAll(bot, nextGreet || "早上好");
     nextGreet = "";
   });
-  scheduleJob("greetNight", "0 22 * * *", async () => {
+  const job = scheduleJob("greetNight", "0 22 * * *", async () => {
     await greetList.sendAll(bot, nextGreet || "晚上好");
     nextGreet = "";
   });
+  console.log(`${job.name} will run at ${job.nextInvocation()}`);
   bot.cmdHooks.add(new SwitchCommand(bot, "greet", greetList));
   bot.registerCommand(
     {

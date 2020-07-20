@@ -18,5 +18,9 @@
     "protocol": "",
     "host": "",
     "port": 8080
+  },
+  "Rss": {
+    "proxyHost": "rsshub.yoshino-s.workers.dev",
+    "updateInterval": 1800000
   }
 }

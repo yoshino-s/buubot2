@@ -101,4 +101,68 @@ export class ContactSet {
   }
 }
 
-export type Pipe<T> = (p: T) => T | undefined;
+export class ContactMap<T> {
+  storage: Storage<[string, string][]>;
+  map: Map<string, string>;
+
+  constructor(name: string) {
+    this.storage = new Storage(name, []);
+    this.map = new Map(this.storage.get());
+  }
+  msgToId(msg: MessageType.ChatMessage) {
+    switch (msg.type) {
+      case "FriendMessage":
+        return `friend_${msg.sender.id}`;
+      case "GroupMessage":
+        return `group_${msg.sender.id}_${msg.sender.group.id}`;
+      case "TempMessage":
+        return `group_${msg.sender.id}_${msg.sender.group.id}`;
+    }
+  }
+  set(msg: MessageType.ChatMessage, value: T) {
+    this.map.set(this.msgToId(msg), JSON.stringify(value));
+    this.storage.set(Array.from(this.map.entries()));
+  }
+
+  get(msg: MessageType.ChatMessage): T | null {
+    return JSON.parse(
+      (this.map = new Map(this.storage.get())).get(this.msgToId(msg)) || "null"
+    );
+  }
+
+  delete(msg: MessageType.ChatMessage) {
+    (this.map = new Map(this.storage.get())).delete(this.msgToId(msg));
+    this.storage.set(Array.from(this.map.entries()));
+  }
+
+  async sendAll(
+    bot: MiraiBot,
+    msg: (data: T) => Promise<string | MessageType.MessageChain>
+  ) {
+    return Promise.all(
+      Array.from((this.map = new Map(this.storage.get())).entries()).map(
+        async ([k, v]) => {
+          const message = await msg(JSON.parse(v));
+          console.log(message);
+          if (k.startsWith("group_")) {
+            const [, group] = k.slice(6).split("_").map(Number);
+            return bot.mirai.api.sendGroupMessage(message, group);
+          } else if (k.startsWith("temp_")) {
+            const [id, group] = k.slice(5).split("_").map(Number);
+            return bot.mirai.api.sendTempMessage(message, id, group);
+          }
+          return bot.mirai.api.sendFriendMessage(message, Number(k.slice(7)));
+        }
+      )
+    );
+  }
+}
+
+export const Async = {
+  map<T, R>(
+    arr: Array<T>,
+    m: (v: T, i: number, a: ArrayLike<T>) => R
+  ): Promise<R[]> {
+    return Promise.all(arr.map(m));
+  },
+};
