@@ -6,12 +6,12 @@ import { SwitchCommand } from "../bot/Command";
 export default function GreetPlugin(bot: MiraiBot) {
   const greetList = new ContactSet("greetList");
   let nextGreet = "";
-  scheduleJob("greetMorning", "0 7 * * *", () => {
-    greetList.sendAll(bot, nextGreet || "早上好");
+  scheduleJob("greetMorning", "0 7 * * *", async () => {
+    await greetList.sendAll(bot, nextGreet || "早上好");
     nextGreet = "";
   });
-  scheduleJob("greetNight", "0 22 * * *", () => {
-    greetList.sendAll(bot, nextGreet || "晚上好");
+  scheduleJob("greetNight", "0 22 * * *", async () => {
+    await greetList.sendAll(bot, nextGreet || "晚上好");
     nextGreet = "";
   });
   bot.cmdHooks.add(new SwitchCommand(bot, "greet", greetList));
@@ -31,8 +31,8 @@ export default function GreetPlugin(bot: MiraiBot) {
       help: "greetMsg msg",
       rule: 0,
     },
-    (msg, cmd, args) => {
-      greetList.sendAll(bot, args);
+    async (msg, cmd, args) => {
+      await greetList.sendAll(bot, args);
       return `Send ${(nextGreet = args)}`;
     }
   );

@@ -86,16 +86,18 @@ export class ContactSet {
     let message: MessageType.MessageChain = [];
     if (Array.isArray(msg)) message = msg;
     else message = unserialize(msg);
-    return Array.from((this.set = new Set(this.storage.get()))).map((v) => {
-      if (v.startsWith("group_")) {
-        const [id, group] = v.slice(6).split("_").map(Number);
-        return bot.mirai.api.sendGroupMessage(message, id, group);
-      } else if (v.startsWith("temp_")) {
-        const [id, group] = v.slice(5).split("_").map(Number);
-        return bot.mirai.api.sendTempMessage(message, id, group);
-      }
-      return bot.mirai.api.sendFriendMessage(message, Number(v.slice(7)));
-    });
+    return Promise.all(
+      Array.from((this.set = new Set(this.storage.get()))).map((v: string) => {
+        if (v.startsWith("group_")) {
+          const [id, group] = v.slice(6).split("_").map(Number);
+          return bot.mirai.api.sendGroupMessage(message, id, group);
+        } else if (v.startsWith("temp_")) {
+          const [id, group] = v.slice(5).split("_").map(Number);
+          return bot.mirai.api.sendTempMessage(message, id, group);
+        }
+        return bot.mirai.api.sendFriendMessage(message, Number(v.slice(7)));
+      })
+    );
   }
 }
 
