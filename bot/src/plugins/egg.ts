@@ -5,6 +5,8 @@ export default function EggPlugin(bot: MiraiBot) {
     {
       cmd: "sucker",
     },
-    async () => (await Axios.get("https://hitokoto.yoshino-s.online/?c=a")).data
+    async () =>
+      (await Axios.get("https://hitokoto.yoshino-s.online/?c=a&encode=text"))
+        .data
   );
 }
