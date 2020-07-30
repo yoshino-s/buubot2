@@ -6,7 +6,10 @@ export default function EggPlugin(bot: MiraiBot) {
       cmd: "sucker",
     },
     async () =>
-      (await Axios.get("https://hitokoto.yoshino-s.online/?c=a&encode=text"))
-        .data
+      (
+        await Axios.get(
+          "https://hitokoto.yoshino-s.online/?c=a&encode=text&max_length=100"
+        )
+      ).data
   );
 }
