@@ -1,8 +1,8 @@
 import { MiraiBot } from "../bot/Bot";
 import { serialize, unserialize } from "../bot/serialization";
 import { diffChars } from "diff";
-import { Storage } from "../bot/utils";
 import { CommandPermission } from "../bot/Command";
+import { SetStorage } from "../bot/utils/storage";
 
 function similarity(s0: string, s1: string) {
   return (
@@ -31,7 +31,7 @@ export default function RepeaterPlugin(bot: MiraiBot) {
     msgSet.set(msg.sender.group.id, p);
   });
 
-  const preventFlashImage = new Storage<number[]>("preventFlashImage", []);
+  const preventFlashImage = new SetStorage<number>("preventFlashImage");
 
   bot.registerCommand(
     {
@@ -40,21 +40,19 @@ export default function RepeaterPlugin(bot: MiraiBot) {
       rule: CommandPermission.admin,
       verify: (msg, cmd, args) => ["on", "off"].includes(args),
     },
-    (msg, cmd, args) => {
+    async (msg, cmd, args) => {
       if (msg.type !== "GroupMessage") return;
-      const l = new Set(preventFlashImage.get());
       if (args === "on") {
-        l.add(msg.sender.group.id);
+        await preventFlashImage.add(msg.sender.group.id);
       } else {
-        l.delete(msg.sender.group.id);
+        await preventFlashImage.remove(msg.sender.group.id);
       }
-      preventFlashImage.set(Array.from(l));
       return "OK";
     }
   );
 
-  bot.mirai.on("GroupMessage", (msg) => {
-    if (preventFlashImage.get().includes(msg.sender.group.id))
+  bot.mirai.on("GroupMessage", async (msg) => {
+    if (await preventFlashImage.has(msg.sender.group.id)) {
       msg.messageChain.forEach((m) => {
         if (m.type === "FlashImage") {
           msg.reply(
@@ -64,5 +62,6 @@ export default function RepeaterPlugin(bot: MiraiBot) {
           );
         }
       });
+    }
   });
 }

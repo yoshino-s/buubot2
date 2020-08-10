@@ -13,3 +13,6 @@ bot/src/config.json
 mirai/setting.yml
 docker-compose.yml
 data/*
+
+redis/data/*
+redis/redis.conf

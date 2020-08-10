@@ -1,7 +1,8 @@
 import { MiraiBot } from "./Bot";
-import { Storage, ContactSet } from "./utils";
 import { MessageType } from "mirai-ts";
 import { unserialize } from "./serialization";
+import { MapStorage, TargetSetStorage } from "./utils/storage";
+import { extractTarget } from "./utils/utils";
 
 /**
  * 0b00000001 friend
@@ -38,7 +39,7 @@ export type CmdHook = (
 export default class MiraiBotCommand {
   config: MiraiBotCommandConfig;
   hook: CmdHook;
-  specialRules: Storage<Record<string, CommandPermission>>;
+  specialRules: MapStorage<number, CommandPermission>;
   constructor(
     private readonly bot: MiraiBot,
     cmd: string | MiraiBotCommandConfig,
@@ -53,25 +54,21 @@ export default class MiraiBotCommand {
       if (cmd.verify) this.verifyArgs = cmd.verify;
     }
     this.hook = hook;
-    this.specialRules = new Storage(
-      this.config.cmd,
-      this.config.specialRule || {}
-    );
+    this.specialRules = new MapStorage("cmd_rule:" + this.config.cmd);
   }
 
   setRule(groupId: number, rule: CommandPermission) {
-    const rules = this.specialRules.get() || {};
-    rules[groupId.toString()] = rule;
-    this.specialRules.set(rules);
+    console.log(groupId, rule);
+    return this.specialRules.set(groupId, rule);
   }
 
-  getRule(groupId?: number): CommandPermission {
+  async getRule(groupId?: number): Promise<CommandPermission> {
     return (
-      (groupId && this.specialRules.get()[groupId.toString()]) ||
-      this.config.rule ||
-      CommandPermission.friend |
-        CommandPermission.group |
-        CommandPermission.temp
+      (groupId && (await this.specialRules.get(groupId))) ??
+      (this.config.rule ||
+        CommandPermission.friend |
+          CommandPermission.group |
+          CommandPermission.temp)
     );
   }
 
@@ -80,7 +77,7 @@ export default class MiraiBotCommand {
       return;
     }
     if (msg.sender.id !== this.bot.config.privilege) {
-      const rule = this.getRule(
+      const rule = await this.getRule(
         msg.type !== "FriendMessage" ? msg.sender.group.id : undefined
       );
       if (msg.type === "FriendMessage" && !(rule & CommandPermission.friend))
@@ -132,8 +129,8 @@ export default class MiraiBotCommand {
 }
 
 export class SwitchCommand extends MiraiBotCommand {
-  set: ContactSet;
-  constructor(bot: MiraiBot, cmd: string, set: ContactSet) {
+  set: TargetSetStorage;
+  constructor(bot: MiraiBot, cmd: string, set: TargetSetStorage) {
     super(
       bot,
       {
@@ -142,11 +139,11 @@ export class SwitchCommand extends MiraiBotCommand {
         rule: CommandPermission.admin | CommandPermission.friend,
         verify: (msg, cmd, args) => ["on", "off"].includes(args),
       },
-      (msg: MessageType.ChatMessage, cmd: string, args: string) => {
+      async (msg: MessageType.ChatMessage, cmd: string, args: string) => {
         if (args === "on") {
-          this.set.add(msg);
+          await this.set.add(extractTarget(msg));
         } else {
-          this.set.delete(msg);
+          await this.set.remove(extractTarget(msg));
         }
         return "OK";
       }

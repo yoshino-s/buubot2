@@ -1,5 +1,6 @@
 import { MiraiBot } from "../bot/Bot";
 import { CommandPermission } from "../bot/Command";
+import Async from "../bot/utils/async";
 
 export default function GroupCmdManagePlugin(bot: MiraiBot) {
   bot.registerCommand(
@@ -21,21 +22,22 @@ Rule:
         return false;
       },
     },
-    (msg, cmd, args) => {
+    async (msg, cmd, args) => {
       if (msg.type === "FriendMessage") return;
       const id = msg.sender.group.id;
-      const c = Array.from(bot.cmdHooks.values()).filter(
-        (v) => v.getRule(id) & CommandPermission.member
-      );
+      const c = Array.from(bot.cmdHooks);
       if (args === "list")
         return (
           `List of cmd in ${msg.sender.group.name}(${id})\n` +
-          c
-            .map(
-              (v) =>
-                `${v.config.cmd} ${v.getRule(id).toString(2).padStart(8, "0")}`
+          (
+            await Async.map(
+              c,
+              async (v) =>
+                `${v.config.cmd} ${(await v.getRule(id))
+                  .toString(2)
+                  .padStart(8, "0")}`
             )
-            .join("\n")
+          ).join("\n")
         );
       else if (args === "mute") {
         c.forEach((c) => c.setRule(id, 0));
@@ -45,7 +47,7 @@ Rule:
       const command = c.find((i) => i.config.cmd === r[1]);
       if (!command) return `Command ${r[1]} not found.`;
       const o = Number(r[2]);
-      command.setRule(id, o);
+      await command.setRule(id, o);
       return `Command Rule of ${r[1]} in ${
         msg.sender.group.name
       }(${id}) is ${o.toString(2).padStart(8, "0")}.`;

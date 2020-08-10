@@ -15,11 +15,14 @@
   "dependencies": {
     "chalk": "^4.1.0",
     "inquirer": "^7.3.2",
-    "socks-proxy-agent": "^5.0.0"
+    "redis": "^3.0.2",
+    "socks-proxy-agent": "^5.0.0",
+    "yaml": "^1.10.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^9.1.1",
     "@commitlint/config-conventional": "^9.1.1",
+    "@types/redis": "^2.8.25",
     "conventional-changelog-cli": "^2.0.34",
     "cz-conventional-changelog": "3.2.0",
     "husky": "^4.2.5",

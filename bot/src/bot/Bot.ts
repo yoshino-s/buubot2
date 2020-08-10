@@ -1,7 +1,11 @@
 import Mirai, { MiraiApiHttpConfig, MessageType } from "mirai-ts";
+import Queue from "bull";
 import MiraiBotCommand, { MiraiBotCommandConfig } from "./Command";
 import { CmdHook } from "./Command";
-import * as utils from "./utils";
+import * as utils from "./utils/utils";
+import Config from "../config.json";
+import { Target } from "./utils/utils";
+import { unserialize } from "./serialization";
 
 export interface MiraiBotConfig {
   account: number;
@@ -21,6 +25,7 @@ export class MiraiBot {
       this.mirai = new Mirai(mirai);
     }
     this.config = config;
+    MiraiBot.currentBot = this;
   }
 
   async boot() {
@@ -58,5 +63,36 @@ export class MiraiBot {
       );
     }
   }
+
+  send(target: Target, msg: string, quote?: number) {
+    if (target.group) {
+      return this.mirai.api.sendGroupMessage(
+        unserialize(msg),
+        target.group,
+        quote
+      );
+    } else if (target.temp) {
+      return this.mirai.api.sendTempMessage(
+        unserialize(msg),
+        target.id,
+        target.temp,
+        quote
+      );
+    } else {
+      return this.mirai.api.sendFriendMessage(
+        unserialize(msg),
+        target.id,
+        quote
+      );
+    }
+  }
+
   static utils = utils;
+  private static currentBot?: MiraiBot;
+  static getCurrentBot(): MiraiBot {
+    if (!MiraiBot.currentBot) {
+      throw new Error("No current bot!");
+    }
+    return MiraiBot.currentBot;
+  }
 }

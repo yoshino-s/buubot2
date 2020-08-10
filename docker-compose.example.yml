@@ -17,6 +17,17 @@ services:
     restart: always
     depends_on:
       - mirai
+      - redis
     volumes:
       - ./data/mirai_image:/app/images
       - ./data/bot_data:/app/data
+  redis:
+    image: redis
+    container_name: redis
+    restart: always
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redis/data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf

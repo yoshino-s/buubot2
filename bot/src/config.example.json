@@ -18,5 +18,10 @@
     "protocol": "",
     "host": "",
     "port": 8080
+  },
+  "Redis": {
+    "host": "",
+    "port": 6379,
+    "password": null
   }
 }
