@@ -215,7 +215,7 @@ async function main() {
 
   console.log(chalk.blue("\nWriting config file\n"));
   await writeConfig({
-    account: config.account,
+    account: input.account,
     password: input.password,
     authKey: input.authKey,
     redisPassword
