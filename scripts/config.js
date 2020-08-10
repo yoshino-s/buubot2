@@ -206,9 +206,9 @@ async function main() {
     config.Redis.host = "redis";
     config.Redis.password = redis.password || "password";
     if (redis.port) {
-      compose.ports = [`${redis.port}:6379`];
+      compose.services.redis.ports = [`${redis.port}:6379`];
     } else {
-      delete compose.ports;
+      delete compose.services.redis.ports;
     }
     redisPassword = redis.password  || "password";
   }
