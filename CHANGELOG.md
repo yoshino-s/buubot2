@@ -1,6 +1,35 @@
 # Changelog
 
 
+### [1.0.3](https://github.com/Yoshino-s/buubot2/compare/v1.0.2...v1.0.3) (2020-08-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* **global:** Remove greet and monitor plugins, add redis dependent
+
+### Features
+
+* **greet:** add greet plugin ([2d729dc](https://github.com/Yoshino-s/buubot2/commit/2d729dc13dea59cc059ffc144f23945ca2b2b724))
+* **group cmd ctl:** add mute cmd ([685dd81](https://github.com/Yoshino-s/buubot2/commit/685dd81cce1f3c5d8d813bcb5f2c2cf9b591901c))
+* **random image:** move to cloudflare server ([087b5c5](https://github.com/Yoshino-s/buubot2/commit/087b5c5b118fc67e048c7c72204d3271d2627b34))
+* **recall & flash image:** prevent recall important msg and flash iamge ([bb20dd8](https://github.com/Yoshino-s/buubot2/commit/bb20dd8e571fb050989865541d8c54dedfeb9d96))
+* **sucker:** move source to self-hosted hitokoto ([8656416](https://github.com/Yoshino-s/buubot2/commit/865641699e7a6e1dbe37de122269c40f1d71bd24))
+
+
+### Bug Fixes
+
+* **config:** fix wrong config ([262446e](https://github.com/Yoshino-s/buubot2/commit/262446e03641382d1332663c1f107f7433f21934))
+* **global:** fix many bugs ([ac929a4](https://github.com/Yoshino-s/buubot2/commit/ac929a48b7a5514875da2b350e460cb15a13ee2b))
+* **greet:** change cmd ([e21e99a](https://github.com/Yoshino-s/buubot2/commit/e21e99a5866128b86f41f87c7f08805c26d7f7f5))
+* **greet:** fix greet cmd ([0c05301](https://github.com/Yoshino-s/buubot2/commit/0c0530179e4918c8cab0367eb08106d24d526144))
+* **greet:** fix sendAll ([0f95c90](https://github.com/Yoshino-s/buubot2/commit/0f95c900ce97d1f040d12d29b9b30888a9ded568))
+* **repeater:** fix the calculation of similarity ([749e627](https://github.com/Yoshino-s/buubot2/commit/749e627509757ebfaa39b73bfa88033d317967f3))
+* **sucker:** add max_length ([364acaf](https://github.com/Yoshino-s/buubot2/commit/364acaf8623ff22afb5c4cc850fc2056bb3fd843))
+* **sucker:** fix encode type ([4f14bad](https://github.com/Yoshino-s/buubot2/commit/4f14badaf798faf7bbeef75655287030e07ab9b9))
+* **unserialize:** froce stringify ([4f7648a](https://github.com/Yoshino-s/buubot2/commit/4f7648a9027444a39748befd473a90e89ae81d84))
+* **utils:** fix sendAll ([52d4bb8](https://github.com/Yoshino-s/buubot2/commit/52d4bb8cc0ca1ea07b6742d22de440da7f5ff369))
+
 ### [1.0.2](https://github.com/Yoshino-s/buubot2/compare/v1.0.1...v1.0.2) (2020-07-17)
 
 
