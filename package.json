@@ -15,8 +15,6 @@
   "dependencies": {
     "chalk": "^4.1.0",
     "inquirer": "^7.3.2",
-    "redis": "^3.0.2",
-    "socks-proxy-agent": "^5.0.0",
     "yaml": "^1.10.0"
   },
   "devDependencies": {
