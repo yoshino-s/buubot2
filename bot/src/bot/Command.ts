@@ -2,7 +2,7 @@ import { MiraiBot } from "./Bot";
 import { MessageType } from "mirai-ts";
 import { unserialize } from "./serialization";
 import { MapStorage, TargetSetStorage } from "./utils/storage";
-import { extractTarget } from "./utils/utils";
+import { extractTarget, Target } from "./utils/utils";
 
 /**
  * 0b00000001 friend
@@ -130,7 +130,12 @@ export default class MiraiBotCommand {
 
 export class SwitchCommand extends MiraiBotCommand {
   set: TargetSetStorage;
-  constructor(bot: MiraiBot, cmd: string, set: TargetSetStorage) {
+  constructor(
+    bot: MiraiBot,
+    cmd: string,
+    set: TargetSetStorage,
+    hook?: (target: Target, status: boolean) => any
+  ) {
     super(
       bot,
       {
@@ -140,11 +145,14 @@ export class SwitchCommand extends MiraiBotCommand {
         verify: (msg, cmd, args) => ["on", "off"].includes(args),
       },
       async (msg: MessageType.ChatMessage, cmd: string, args: string) => {
+        console.log(msg);
+        const target = extractTarget(msg);
         if (args === "on") {
-          await this.set.add(extractTarget(msg));
+          await this.set.add(target);
         } else {
-          await this.set.remove(extractTarget(msg));
+          await this.set.remove(target);
         }
+        hook?.(target, args === "on");
         return "OK";
       }
     );

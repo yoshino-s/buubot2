@@ -7,6 +7,7 @@ import GroupCmdManagePlugin from "./plugins/groupCmdManage";
 import CalendarPlugin from "./plugins/calendar";
 import RepeaterPlugin from "./plugins/repeater";
 import RecallMonitorPlugin from "./plugins/recallMonitor";
+import GreetPlugin from "./plugins/greet";
 
 const bot = new MiraiBot(Config.API, Config.Bot);
 
@@ -17,7 +18,8 @@ bot.registerPlugins(
   GroupCmdManagePlugin,
   CalendarPlugin,
   RepeaterPlugin,
-  RecallMonitorPlugin
+  RecallMonitorPlugin,
+  GreetPlugin
 );
 
 async function bootstrap() {
