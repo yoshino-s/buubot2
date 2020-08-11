@@ -1,9 +1,7 @@
 import Mirai, { MiraiApiHttpConfig, MessageType } from "mirai-ts";
-import Queue from "bull";
 import MiraiBotCommand, { MiraiBotCommandConfig } from "./Command";
 import { CmdHook } from "./Command";
 import * as utils from "./utils/utils";
-import Config from "../config.json";
 import { Target } from "./utils/utils";
 import { unserialize } from "./serialization";
 
