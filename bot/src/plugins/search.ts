@@ -1,5 +1,4 @@
 import { MiraiBot } from "../bot/Bot";
-import { agent } from "../bot/utils/proxy";
 import Axios from "axios";
 export default function SearchPlugin(bot: MiraiBot) {
   bot.registerCommand(

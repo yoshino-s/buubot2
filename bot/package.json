@@ -6,7 +6,7 @@
   "main": "src/main.ts",
   "scripts": {
     "dev": "ts-node src/main.ts",
-    "build": "ncc build src/main.ts -o deploy/src/",
+    "build": "ncc build src/main.ts -o deploy/src/ && cp node_modules/bull/lib/commands/*.lua deploy/src/",
     "clean": "rm -rf dist",
     "lint": "eslint . --ext .js,.ts"
   },
