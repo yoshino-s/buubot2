@@ -134,6 +134,7 @@ export class SwitchCommand extends MiraiBotCommand {
     bot: MiraiBot,
     cmd: string,
     set: TargetSetStorage,
+    explicit = true,
     hook?: (target: Target, status: boolean) => any
   ) {
     super(
@@ -146,7 +147,7 @@ export class SwitchCommand extends MiraiBotCommand {
       },
       async (msg: MessageType.ChatMessage, cmd: string, args: string) => {
         console.log(msg);
-        const target = extractTarget(msg);
+        const target = extractTarget(msg, explicit);
         if (args === "on") {
           await this.set.add(target);
         } else {

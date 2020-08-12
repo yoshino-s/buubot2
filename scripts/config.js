@@ -89,6 +89,11 @@ async function main() {
         message: "Enter your privilege account",
         name: "privilege",
         validate: s => !Number.isNaN(Number(s)),
+      }, {
+        type: "input",
+        message: "Enter web port of bot",
+        name: "exposePort",
+        validate: s => !Number.isNaN(Number(s)),
       },
     ]);
 
@@ -96,6 +101,11 @@ async function main() {
   config.Bot.account = Number(input.account);
   config.Bot.commandPrefix = input.commandPrefix;
   config.Bot.privilege = Number(input.privilege);
+  if (input.exposePort) {
+    compose.services.bot.ports = [`${input.exposePort}:8080`];
+  } else {
+    delete compose.services.bot.ports;
+  }
 
   console.log(chalk.blue("\nProxy Config\n"));
 

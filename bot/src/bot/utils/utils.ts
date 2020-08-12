@@ -2,6 +2,7 @@ import Config from "../../config.json";
 import { MessageType } from "mirai-ts";
 import { MiraiBot } from "../Bot";
 import Queue from "bull";
+import { setQueues } from "bull-board";
 
 export type Target = {
   id: number;
@@ -30,10 +31,13 @@ export function extractTarget(
   };
 }
 
-export const queue = <T = any>(name: string) =>
-  new Queue<T>(name, {
+export const queue = <T = any>(name: string) => {
+  const queue = new Queue<T>(name, {
     redis: Config.Redis,
   });
+  setQueues(queue);
+  return queue;
+};
 
 export const sendMsgQueue = queue<{
   target: Target;

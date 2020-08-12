@@ -16,7 +16,7 @@ const nightRepeat = {
 export default function GreetPlugin(bot: MiraiBot) {
   const greetList = new TargetSetStorage("greetList");
   bot.cmdHooks.add(
-    new SwitchCommand(bot, "greet", greetList, (target, status) => {
+    new SwitchCommand(bot, "greet", greetList, false, (target, status) => {
       if (status) {
         sendMsgQueue.add(
           { target: target, msg: "早上好" },
