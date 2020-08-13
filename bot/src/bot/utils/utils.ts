@@ -3,6 +3,11 @@ import { MessageType } from "mirai-ts";
 import { MiraiBot } from "../Bot";
 import Queue from "bull";
 import { setQueues } from "bull-board";
+import { createWriteStream } from "fs";
+import { resolve } from "path";
+import Axios from "axios";
+import { createHash } from "crypto";
+import { execSync } from "child_process";
 
 export type Target = {
   id: number;
@@ -47,3 +52,8 @@ export const sendMsgQueue = queue<{
 sendMsgQueue.process(async (job) =>
   MiraiBot.getCurrentBot().send(job.data.target, job.data.msg)
 );
+
+export function saveImg(url: string, name: string) {
+  name = resolve(Config.Utils.imageStorage, name);
+  execSync(`wget "${url}" -O ${name}`);
+}

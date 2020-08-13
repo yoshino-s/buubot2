@@ -8,7 +8,9 @@
   "Bot": {
     "account": 0,
     "commandPrefix": "/",
-    "privilege": 0
+    "privilege": 0,
+    "host": "localhost",
+    "port": 8080
   },
   "Utils": {
     "dataStorage":  "/app/data",

@@ -7,6 +7,7 @@ import { CmdHook } from "./Command";
 import * as utils from "./utils/utils";
 import { Target } from "./utils/utils";
 import { unserialize } from "./serialization";
+import { resolve } from "path";
 
 export interface MiraiBotConfig {
   account: number;
@@ -31,7 +32,7 @@ export class MiraiBot {
   }
 
   async boot() {
-    await this.mirai.login(904814779);
+    await this.mirai.login(this.config.account);
     await this.mirai.axios.post("/config", {
       sessionKey: this.mirai.sessionKey,
       cacheSize: 4096,
@@ -42,6 +43,9 @@ export class MiraiBot {
       this.messageHook(msg);
     });
     this.express.use("/bull", UI);
+    this.express.engine("ejs", (ejs as any).__express);
+    this.express.set("view engine", "ejs");
+    this.express.set("views", resolve(__dirname, "../views"));
 
     this.mirai.listen();
     this.express.listen(8080, "0.0.0.0");
