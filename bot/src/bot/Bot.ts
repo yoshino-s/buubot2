@@ -1,7 +1,5 @@
 import Mirai, { MiraiApiHttpConfig, MessageType } from "mirai-ts";
-import Fastify from "fastify";
-import middie from "middie";
-import pointOfView from "point-of-view";
+import Express from "express";
 import ejs from "ejs";
 import { UI } from "bull-board";
 import MiraiBotCommand, { MiraiBotCommandConfig } from "./Command";
@@ -20,7 +18,7 @@ export class MiraiBot {
   mirai: Mirai;
   config: MiraiBotConfig;
   cmdHooks: Set<MiraiBotCommand>;
-  fastify = Fastify();
+  express = Express();
   constructor(mirai: Mirai | MiraiApiHttpConfig, config: MiraiBotConfig) {
     this.cmdHooks = new Set();
     if (mirai instanceof Mirai) {
@@ -43,16 +41,10 @@ export class MiraiBot {
       console.log(msg);
       this.messageHook(msg);
     });
-    this.fastify.register(pointOfView, {
-      engine: {
-        ejs: ejs,
-      },
-    });
-    this.fastify.register(middie);
-    this.fastify.use("/bull", UI);
+    this.express.use("/bull", UI);
 
     this.mirai.listen();
-    this.fastify.listen(8080, "0.0.0.0");
+    this.express.listen(8080, "0.0.0.0");
   }
 
   registerCommand(cmd: string | MiraiBotCommandConfig, hook: CmdHook) {
