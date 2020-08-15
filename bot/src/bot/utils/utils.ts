@@ -8,7 +8,7 @@ import { execSync } from "child_process";
 import textify from "./textify";
 
 export type Target = {
-  id: number;
+  id?: number;
   group?: number;
   temp?: number;
 };
@@ -20,13 +20,13 @@ export function extractTarget(
   switch (msg.type) {
     case "GroupMessage":
       return {
-        id: msg.sender.id,
-        group: explicit ? msg.sender.group.id : undefined,
+        id: explicit ? msg.sender.id : undefined,
+        group: msg.sender.group.id,
       };
     case "TempMessage":
       return {
         id: msg.sender.id,
-        temp: explicit ? msg.sender.group.id : undefined,
+        temp: msg.sender.group.id,
       };
   }
   return {

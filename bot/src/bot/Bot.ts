@@ -80,19 +80,21 @@ export class MiraiBot {
         target.group,
         quote
       );
-    } else if (target.temp) {
-      return this.mirai.api.sendTempMessage(
-        unserialize(msg),
-        target.id,
-        target.temp,
-        quote
-      );
-    } else {
-      return this.mirai.api.sendFriendMessage(
-        unserialize(msg),
-        target.id,
-        quote
-      );
+    } else if (target.id) {
+      if (target.temp) {
+        return this.mirai.api.sendTempMessage(
+          unserialize(msg),
+          target.id,
+          target.temp,
+          quote
+        );
+      } else {
+        return this.mirai.api.sendFriendMessage(
+          unserialize(msg),
+          target.id,
+          quote
+        );
+      }
     }
   }
 

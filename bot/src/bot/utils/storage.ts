@@ -92,7 +92,13 @@ export class SetStorage<T> extends Storage<Set<T>> {
   }
 
   async add(v: T) {
-    return promisify(client.SISMEMBER)
+    return promisify(
+      client.SADD as (
+        s: string,
+        k: string,
+        cb: redis.Callback<number>
+      ) => boolean
+    )
       .bind(client)(this.name, this.itemSerializer.stringify(v))
       .then(Boolean);
   }
@@ -108,13 +114,10 @@ export class SetStorage<T> extends Storage<Set<T>> {
   }
 
   async has(v: T) {
-    return promisify(
-      client.SREM as (
-        k: string,
-        v: string,
-        cb: redis.Callback<number>
-      ) => boolean
-    ).bind(client)(this.name, this.itemSerializer.stringify(v));
+    return promisify(client.SISMEMBER).bind(client)(
+      this.name,
+      this.itemSerializer.stringify(v)
+    );
   }
 
   async forEach(cb: (v: T) => any) {
@@ -226,6 +229,12 @@ export class MapStorage<K, V> extends Storage<Map<K, V>> {
         cb: redis.Callback<number>
       ) => boolean
     ).bind(client)(this.name, this.keySerializer.stringify(k));
+  }
+
+  async clear() {
+    return promisify(
+      client.DEL as (k: string, cb: redis.Callback<number>) => boolean
+    ).bind(client)(this.name);
   }
 
   async forEach(cb: ([k, v]: [K, V]) => any) {

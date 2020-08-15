@@ -33,52 +33,52 @@ const map = ([
   ["S", 127],
   ["M", 50],
 ] as [string, number][]).sort((a, b) => a[1] - b[1]);
-export default function textify(fromPath: string, toPath: string, pixel = 8) {
-  return Jimp.read(fromPath)
-    .then((img) => {
-      const [width, height] = [img.getWidth(), img.getHeight()];
-      return img
-        .crop(0, 0, width - (width % pixel), height - (height % pixel))
-        .greyscale();
-    })
-    .then(async (img) => {
-      const [width, height] = [img.getWidth(), img.getHeight()];
-      const newImg = new Jimp(
-        (width / pixel) * 16,
-        (height / pixel) * 16,
-        0xffffffff
-      );
-      const font = await Jimp.loadFont(
-        resolve(__dirname, "./open-sans-16-black.fnt")
-      );
-      for (let y = 0; y < height; y += pixel) {
-        for (let x = 0; x < width; x += pixel) {
-          let cnt = 0;
-          for (let ix = x; ix < x + pixel; ix++) {
-            for (let iy = y; iy < y + pixel; iy++) {
-              if (
-                parseInt(
-                  img
-                    .getPixelColor(ix, iy)
-                    .toString(16)
-                    .padStart(8, "0")
-                    .slice(0, 2),
-                  16
-                ) >
-                255 / 2
-              )
-                cnt++;
-            }
-          }
-          const grey = (cnt / pixel ** 2) * 255;
-          newImg.print(
-            font,
-            (x / pixel) * 16,
-            (y / pixel) * 16,
-            map.find((i) => grey < i[1])?.[0] || " "
-          );
+export default async function textify(
+  fromPath: string,
+  toPath: string,
+  pixel = 8
+) {
+  const img = await Jimp.read(fromPath);
+  const [width, height] = [img.getWidth(), img.getHeight()];
+  const img_1 = img
+    .crop(0, 0, width - (width % pixel), height - (height % pixel))
+    .greyscale();
+  const [width_1, height_1] = [img_1.getWidth(), img_1.getHeight()];
+  const newImg = new Jimp(
+    (width_1 / pixel) * 16,
+    (height_1 / pixel) * 16,
+    0xffffffff
+  );
+  const font = await Jimp.loadFont(
+    resolve(__dirname, "./open-sans-16-black.fnt")
+  );
+  for (let y = 0; y < height_1; y += pixel) {
+    for (let x = 0; x < width_1; x += pixel) {
+      let cnt = 0;
+      for (let ix = x; ix < x + pixel; ix++) {
+        for (let iy = y; iy < y + pixel; iy++) {
+          if (
+            parseInt(
+              img_1
+                .getPixelColor(ix, iy)
+                .toString(16)
+                .padStart(8, "0")
+                .slice(0, 2),
+              16
+            ) >
+            255 / 2
+          )
+            cnt++;
         }
       }
-      return newImg.write(toPath);
-    });
+      const grey = (cnt / pixel ** 2) * 255;
+      newImg.print(
+        font,
+        (x / pixel) * 16,
+        (y / pixel) * 16,
+        map.find((i) => grey < i[1])?.[0] || " "
+      );
+    }
+  }
+  return newImg.write(toPath);
 }
