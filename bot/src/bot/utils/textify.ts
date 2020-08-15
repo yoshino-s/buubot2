@@ -75,7 +75,7 @@ export default function textify(fromPath: string, toPath: string, pixel = 8) {
             font,
             (x / pixel) * 16,
             (y / pixel) * 16,
-            map.find((i) => grey < i[1])?.[1] || " "
+            map.find((i) => grey < i[1])?.[0] || " "
           );
         }
       }
