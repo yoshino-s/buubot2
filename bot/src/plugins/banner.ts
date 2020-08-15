@@ -14,7 +14,7 @@ export default function BannerPlugin(bot: MiraiBot) {
     async (msg, cmd, args) => {
       const target = extractTarget(msg, false);
       const w = (await banWorkMap.get(target)) || [];
-      w.push(args);
+      w.push(args.toLowerCase());
       await banWorkMap.set(target, w);
       return `将对关键词"${args}"封禁。现在的封禁词列表：${w.join(",")}`;
     }
@@ -22,7 +22,8 @@ export default function BannerPlugin(bot: MiraiBot) {
   bot.mirai.on("GroupMessage", async (msg) => {
     const target = extractTarget(msg, false);
     const w = (await banWorkMap.get(target)) || [];
-    if (w.some((v) => msg.plain.includes(v))) {
+    const plain = msg.plain.toLowerCase();
+    if (w.some((v) => plain.includes(v))) {
       await bot.mirai.api.mute(msg.sender.group.id, msg.sender.id, 60 * 60);
       await bot.send(
         target,
