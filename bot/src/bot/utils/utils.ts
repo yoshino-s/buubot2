@@ -8,6 +8,7 @@ import { resolve } from "path";
 import Axios from "axios";
 import { createHash } from "crypto";
 import { execSync } from "child_process";
+import textify from "./textify";
 
 export type Target = {
   id: number;
@@ -53,7 +54,10 @@ sendMsgQueue.process(async (job) =>
   MiraiBot.getCurrentBot().send(job.data.target, job.data.msg)
 );
 
-export function saveImg(url: string, name: string) {
+export async function saveImg(url: string, name: string, text?: string) {
   name = resolve(Config.Utils.imageStorage, name);
   execSync(`wget "${url}" -O ${name}`);
+  if (text) {
+    await textify(name, resolve(Config.Utils.imageStorage, text));
+  }
 }
