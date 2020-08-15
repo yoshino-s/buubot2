@@ -9,6 +9,7 @@ import RepeaterPlugin from "./plugins/repeater";
 import RecallMonitorPlugin from "./plugins/recallMonitor";
 import GreetPlugin from "./plugins/greet";
 import SearchPlugin from "./plugins/search";
+import BannerPlugin from "./plugins/banner";
 
 const bot = new MiraiBot(Config.API, Config.Bot);
 
@@ -21,7 +22,8 @@ bot.registerPlugins(
   RepeaterPlugin,
   RecallMonitorPlugin,
   GreetPlugin,
-  SearchPlugin
+  SearchPlugin,
+  BannerPlugin
 );
 
 async function bootstrap() {
