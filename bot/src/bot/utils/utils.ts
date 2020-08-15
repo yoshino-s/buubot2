@@ -3,10 +3,7 @@ import { MessageType } from "mirai-ts";
 import { MiraiBot } from "../Bot";
 import Queue from "bull";
 import { setQueues } from "bull-board";
-import { createWriteStream } from "fs";
 import { resolve } from "path";
-import Axios from "axios";
-import { createHash } from "crypto";
 import { execSync } from "child_process";
 import textify from "./textify";
 

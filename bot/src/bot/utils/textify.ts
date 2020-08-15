@@ -1,4 +1,8 @@
 import Jimp from "jimp";
+import { readFileSync } from "fs";
+import { resolve } from "path";
+readFileSync(resolve(__dirname, "./open-sans-16-black.fnt")).toString();
+readFileSync(resolve(__dirname, "./open-sans-16-black.png")).toString();
 
 const map = ([
   [" ", 255],
@@ -44,7 +48,9 @@ export default function textify(fromPath: string, toPath: string, pixel = 8) {
         (height / pixel) * 16,
         0xffffffff
       );
-      const font = await Jimp.loadFont(Jimp.FONT_SANS_16_BLACK);
+      const font = await Jimp.loadFont(
+        resolve(__dirname, "./open-sans-16-black.fnt")
+      );
       for (let y = 0; y < height; y += pixel) {
         for (let x = 0; x < width; x += pixel) {
           let cnt = 0;
