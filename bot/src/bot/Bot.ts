@@ -11,7 +11,7 @@ import { resolve } from "path";
 
 export interface MiraiBotConfig {
   account: number;
-  commandPrefix: string;
+  commandPrefix: string | string[];
   privilege?: number;
 }
 
@@ -61,7 +61,12 @@ export class MiraiBot {
 
   private messageHook(msg: MessageType.ChatMessage) {
     const plain = msg.plain;
-    if (plain && plain.startsWith(this.config.commandPrefix)) {
+    if (
+      plain &&
+      (typeof this.config.commandPrefix === "string"
+        ? plain.startsWith(this.config.commandPrefix)
+        : this.config.commandPrefix.some((p) => plain.startsWith(p)))
+    ) {
       console.log("Cmd: " + plain);
       const cmdline = plain
         .slice(this.config.commandPrefix.length)
