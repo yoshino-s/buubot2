@@ -69,7 +69,11 @@ export class MiraiBot {
     ) {
       console.log("Cmd: " + plain);
       const cmdline = plain
-        .slice(this.config.commandPrefix.length)
+        .slice(
+          typeof this.config.commandPrefix === "string"
+            ? this.config.commandPrefix.length
+            : this.config.commandPrefix.find((p) => plain.startsWith(p))?.length
+        )
         .trim()
         .split(" ");
       this.cmdHooks.forEach((v) =>
