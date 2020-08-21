@@ -1,9 +1,6 @@
 import { MiraiBot } from "../bot/Bot";
 import Axios from "axios";
 import { saveImg } from "../bot/utils/utils";
-import textify from "../bot/utils/textify";
-import Config from "../config.json";
-import { resolve } from "path";
 
 export default function EggPlugin(bot: MiraiBot) {
   bot.registerCommand(
@@ -14,6 +11,17 @@ export default function EggPlugin(bot: MiraiBot) {
       (
         await Axios.get(
           "https://hitokoto.yoshino-s.online/?c=a&encode=text&max_length=100"
+        )
+      ).data
+  );
+  bot.registerCommand(
+    {
+      cmd: "ctfer",
+    },
+    async () =>
+      (
+        await Axios.get(
+          "https://hitokoto.yoshino-s.online/?c=c&encode=text&max_length=100"
         )
       ).data
   );
