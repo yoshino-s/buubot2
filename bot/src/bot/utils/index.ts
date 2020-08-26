@@ -1,11 +1,16 @@
-import Config from "../../config.json";
-import { MessageType } from "mirai-ts";
-import { MiraiBot } from "../Bot";
-import Queue from "bull";
-import { setQueues } from "bull-board";
-import { resolve } from "path";
 import { execSync } from "child_process";
-import textify from "./textify";
+import { resolve } from "path";
+import { EventEmitter as EE } from "events";
+
+import Queue from "bull";
+import StrictEventEmitter from "strict-event-emitter-types";
+import { setQueues } from "bull-board";
+import { MessageType } from "mirai-ts";
+
+import Config from "../../config.json";
+import { MiraiBot } from "../Bot";
+
+import { textify } from "./textify";
 
 export type Target = {
   id?: number;
@@ -58,3 +63,12 @@ export async function saveImg(url: string, name: string, text?: string) {
     await textify(name, resolve(Config.Utils.imageStorage, text));
   }
 }
+
+export type EventEmitter<T> = StrictEventEmitter<EE, T>;
+export type EventEmitterClass<T> = { new (): StrictEventEmitter<EE, T> };
+
+export * from "./async";
+export * from "./proxy";
+export * from "./storage";
+export * from "./textify";
+export * from "./serialization";

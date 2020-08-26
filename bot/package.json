@@ -8,7 +8,7 @@
     "dev": "ts-node src/main.ts",
     "build": "ncc build src/main.ts -o deploy/src/ && cp node_modules/bull/lib/commands/*.lua deploy/src/",
     "clean": "rm -rf dist",
-    "lint": "eslint . --ext .js,.ts"
+    "lint": "eslint . --ext .js,.ts,.json --fix"
   },
   "dependencies": {
     "axios": "^0.19.2",
@@ -19,7 +19,8 @@
     "ejs": "^3.1.3",
     "express": "^4.17.1",
     "jimp": "^0.16.0",
-    "mirai-ts": "^0.3.0",
+    "log4js": "^6.3.0",
+    "mirai-ts": "^0.5.2",
     "redis": "^3.0.2",
     "rss-parser": "^3.8.0",
     "socks-proxy-agent": "^5.0.0",
@@ -33,14 +34,17 @@
     "@types/ejs": "^3.0.4",
     "@types/node": "^14.0.13",
     "@types/ws": "^7.2.5",
-    "@typescript-eslint/eslint-plugin": "^3.5.0",
-    "@typescript-eslint/parser": "^3.5.0",
+    "@typescript-eslint/eslint-plugin": "^3.10.1",
+    "@typescript-eslint/parser": "^3.10.1",
     "@zeit/ncc": "^0.22.3",
-    "eslint": "^7.3.1",
+    "eslint": "^7.7.0",
     "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-prettier": "^3.1.4",
     "prettier": "^2.0.5",
-    "ts-node": "^8.10.2",
-    "typescript": "^3.9.6"
+    "reflect-metadata": "^0.1.13",
+    "strict-event-emitter-types": "^2.0.0",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.2"
   }
 }

@@ -1,5 +1,6 @@
-import { MiraiBot } from "../bot/Bot";
 import Axios from "axios";
+
+import { Bot } from "../bot/Bot";
 
 function cusScore(score: number) {
   if (score <= 1000) {
@@ -17,8 +18,8 @@ function cusScore(score: number) {
   return "yyds!";
 }
 
-export default function RankPlugin(bot: MiraiBot) {
-  bot.registerCommand(
+export default function RankPlugin(bot: Bot) {
+  bot.register(
     {
       cmd: "rank",
       help: "Usage: rank id",
@@ -33,7 +34,7 @@ export default function RankPlugin(bot: MiraiBot) {
         })
       ).data.message || "Internal Error"
   );
-  bot.registerCommand(
+  bot.register(
     {
       cmd: "score",
       help: "score id",

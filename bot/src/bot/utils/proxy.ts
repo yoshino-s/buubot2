@@ -1,6 +1,7 @@
-import Config from "../../config.json";
-import { SocksProxyAgent } from "socks-proxy-agent";
 import Axios, { AxiosInstance } from "axios";
+import { SocksProxyAgent } from "socks-proxy-agent";
+
+import Config from "../../config.json";
 
 export let agent: AxiosInstance;
 
@@ -8,9 +9,6 @@ switch (Config.Proxy.protocol) {
   case "socks":
   case "socks4":
   case "socks5":
-    console.log(
-      `${Config.Proxy.protocol}://${Config.Proxy.host}:${Config.Proxy.port}`
-    );
     agent = Axios.create({
       httpAgent: new SocksProxyAgent(
         `${Config.Proxy.protocol}://${Config.Proxy.host}:${Config.Proxy.port}`

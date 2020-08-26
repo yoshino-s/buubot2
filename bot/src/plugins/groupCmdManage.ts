@@ -1,9 +1,9 @@
-import { MiraiBot } from "../bot/Bot";
+import { Bot } from "../bot/Bot";
 import { CommandPermission } from "../bot/Command";
-import Async from "../bot/utils/async";
+import { Async } from "../bot/utils";
 
-export default function GroupCmdManagePlugin(bot: MiraiBot) {
-  bot.registerCommand(
+export default function GroupCmdManagePlugin(bot: Bot) {
+  bot.register(
     {
       cmd: "GroupCmd",
       help: `GroupCmd list | (set {cmd} {rule}) | mute
@@ -25,7 +25,7 @@ Rule:
     async (msg, cmd, args) => {
       if (msg.type === "FriendMessage") return;
       const id = msg.sender.group.id;
-      const c = Array.from(bot.cmdHooks);
+      const c = bot.cmdHooks;
       if (args === "list")
         return (
           `List of cmd in ${msg.sender.group.name}(${id})\n` +

@@ -1,9 +1,13 @@
-import redis from "redis";
-import Config from "../../config.json";
 import { promisify } from "util";
-import Async from "./async";
-import { Target } from "./utils";
+
+import redis from "redis";
+
+import Config from "../../config.json";
 import { MiraiBot } from "../Bot";
+
+import { Async } from "./async";
+
+import { Target } from ".";
 
 const prefix = "mirai_bot:";
 const client = redis.createClient(Config.Redis);

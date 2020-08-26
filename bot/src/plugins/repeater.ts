@@ -1,8 +1,8 @@
-import { MiraiBot } from "../bot/Bot";
-import { serialize, unserialize } from "../bot/serialization";
 import { diffChars } from "diff";
+
+import { Bot } from "../bot/Bot";
 import { CommandPermission } from "../bot/Command";
-import { SetStorage } from "../bot/utils/storage";
+import { serialize, unserialize, SetStorage } from "../bot/utils";
 
 function similarity(s0: string, s1: string) {
   return (
@@ -12,7 +12,7 @@ function similarity(s0: string, s1: string) {
     ) / Math.max(s0.length, s1.length)
   );
 }
-export default function RepeaterPlugin(bot: MiraiBot) {
+export default function RepeaterPlugin(bot: Bot) {
   const msgSet = new Map<number, [string, number]>();
   bot.mirai.on("message", (msg) => {
     if (msg.type === "FriendMessage") return;
@@ -33,7 +33,7 @@ export default function RepeaterPlugin(bot: MiraiBot) {
 
   const preventFlashImage = new SetStorage<number>("preventFlashImage");
 
-  bot.registerCommand(
+  bot.register(
     {
       cmd: "preventFlashImage",
       help: "preventFlashImage on|off",

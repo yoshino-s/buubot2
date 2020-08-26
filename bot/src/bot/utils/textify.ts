@@ -1,6 +1,7 @@
-import Jimp from "jimp";
 import { readFileSync } from "fs";
 import { resolve } from "path";
+
+import Jimp from "jimp";
 readFileSync(resolve(__dirname, "./open-sans-16-black.fnt")).toString();
 readFileSync(resolve(__dirname, "./open-sans-16-black.png")).toString();
 
@@ -33,11 +34,7 @@ const map = ([
   ["S", 127],
   ["M", 50],
 ] as [string, number][]).sort((a, b) => a[1] - b[1]);
-export default async function textify(
-  fromPath: string,
-  toPath: string,
-  pixel = 8
-) {
+export async function textify(fromPath: string, toPath: string, pixel = 8) {
   const img = await Jimp.read(fromPath);
   const [width, height] = [img.getWidth(), img.getHeight()];
   const img_1 = img

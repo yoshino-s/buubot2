@@ -1,64 +1,85 @@
-import Mirai, { MiraiApiHttpConfig, MessageType } from "mirai-ts";
+import { resolve } from "path";
+
+import Mirai, { MiraiApiHttpConfig, MessageType, EventType } from "mirai-ts";
 import Express from "express";
 import ejs from "ejs";
 import { UI } from "bull-board";
-import MiraiBotCommand, { MiraiBotCommandConfig } from "./Command";
-import { CmdHook } from "./Command";
-import * as utils from "./utils/utils";
-import { Target } from "./utils/utils";
-import { unserialize } from "./serialization";
-import { resolve } from "path";
+import { sendMessage } from "mirai-ts/dist/types/api/response";
 
-export interface MiraiBotConfig {
+import BotCommand, { BotCommandConfig, CmdHook } from "./Command";
+import { Target, unserialize } from "./utils";
+
+declare type Data<
+  T extends "message" | EventType.EventType | MessageType.ChatMessageType
+> = T extends EventType.EventType
+  ? EventType.EventMap[T]
+  : T extends MessageType.ChatMessageType
+  ? MessageType.ChatMessageMap[T]
+  : MessageType.ChatMessage;
+
+export type BotPlugin = (bot: Bot) => any;
+
+export type BotHook = typeof Mirai.prototype.on;
+
+export interface BotConfig {
   account: number;
   commandPrefix: string | string[];
   privilege?: number;
 }
 
-export class MiraiBot {
+export interface Bot {
   mirai: Mirai;
-  config: MiraiBotConfig;
-  cmdHooks: Set<MiraiBotCommand>;
-  express = Express();
-  constructor(mirai: Mirai | MiraiApiHttpConfig, config: MiraiBotConfig) {
-    this.cmdHooks = new Set();
-    if (mirai instanceof Mirai) {
-      this.mirai = mirai;
+  config: BotConfig;
+  cmdHooks: BotCommand[];
+  boot(): Promise<any>;
+  register(data: string | BotCommandConfig, cb: CmdHook): void;
+  register(
+    data: BotPlugin | BotCommand,
+    ...args: (BotPlugin | BotCommand)[]
+  ): void;
+  send(
+    target: Target,
+    msg: string,
+    quote?: number
+  ): Promise<sendMessage> | undefined;
+  enable(): void;
+  disable(): void;
+}
+
+export class BotNamespace implements Bot {
+  mirai: Mirai;
+  readonly config: BotConfig;
+  cmdHooks: BotCommand[] = [];
+  private _enabled = false;
+  constructor(mirai: Mirai | MiraiApiHttpConfig, config: BotConfig);
+  constructor(mirai: Bot);
+  constructor(mirai: Mirai | MiraiApiHttpConfig | Bot, config?: BotConfig) {
+    if (config) {
+      if (mirai instanceof Mirai) {
+        this.mirai = mirai;
+      } else {
+        this.mirai = new Mirai(mirai as MiraiApiHttpConfig);
+      }
+      this.config = config;
     } else {
-      this.mirai = new Mirai(mirai);
+      this.mirai = (mirai as Bot).mirai;
+      this.config = (mirai as Bot).config;
     }
-    this.config = config;
-    MiraiBot.currentBot = this;
   }
-
+  on<T extends "message" | EventType.EventType | MessageType.ChatMessageType>(
+    event: T,
+    listener: (data: Data<T>) => any
+  ): void {
+    return this.mirai.on(event, (data) => {
+      if (this._enabled) {
+        listener(data);
+      }
+    });
+  }
   async boot() {
-    await this.mirai.login(this.config.account);
-    await this.mirai.axios.post("/config", {
-      sessionKey: this.mirai.sessionKey,
-      cacheSize: 4096,
-      enableWebsocket: true,
-    });
-    this.mirai.on("message", (msg) => {
-      console.log(msg);
-      this.messageHook(msg);
-    });
-    this.express.use("/bull", UI);
-    this.express.engine("ejs", (ejs as any).__express);
-    this.express.set("view engine", "ejs");
-    this.express.set("views", resolve(__dirname, "../views"));
-
-    this.mirai.listen();
-    this.express.listen(8080, "0.0.0.0");
+    this.on("message", (msg) => this.messageHook(msg));
+    this.enable();
   }
-
-  registerCommand(cmd: string | MiraiBotCommandConfig, hook: CmdHook) {
-    this.cmdHooks.add(new MiraiBotCommand(this, cmd, hook));
-  }
-
-  registerPlugins(...plugins: ((bot: MiraiBot) => void)[]) {
-    plugins.forEach((i) => i(this));
-  }
-
   private messageHook(msg: MessageType.ChatMessage) {
     const plain = msg.plain;
     if (
@@ -67,7 +88,6 @@ export class MiraiBot {
         ? plain.startsWith(this.config.commandPrefix)
         : this.config.commandPrefix.some((p) => plain.startsWith(p)))
     ) {
-      console.log("Cmd: " + plain);
       const cmdline = plain
         .slice(
           typeof this.config.commandPrefix === "string"
@@ -81,7 +101,25 @@ export class MiraiBot {
       );
     }
   }
-
+  register(data: string | BotCommandConfig, cb: CmdHook): void;
+  register(
+    data: BotPlugin | BotCommand,
+    ...args: (BotPlugin | BotCommand)[]
+  ): void;
+  register(
+    arg0: BotPlugin | BotCommand | string | BotCommandConfig,
+    arg1?: CmdHook | BotPlugin | BotCommand,
+    ...args: (BotPlugin | BotCommand)[]
+  ) {
+    args.forEach((i) => this.register(i));
+    if (typeof arg0 === "function") {
+      arg0(this);
+    } else if (arg0 instanceof BotCommand) {
+      this.cmdHooks.push(arg0);
+    } else {
+      this.cmdHooks.push(new BotCommand(this, arg0, arg1 as CmdHook));
+    }
+  }
   send(target: Target, msg: string, quote?: number) {
     if (target.group) {
       return this.mirai.api.sendGroupMessage(
@@ -106,13 +144,60 @@ export class MiraiBot {
       }
     }
   }
-
-  static utils = utils;
-  private static currentBot?: MiraiBot;
+  enable() {
+    this._enabled = true;
+  }
+  disable() {
+    this._enabled = false;
+  }
   static getCurrentBot(): MiraiBot {
-    if (!MiraiBot.currentBot) {
+    if (!currentBot) {
       throw new Error("No current bot!");
     }
-    return MiraiBot.currentBot;
+    return currentBot;
+  }
+}
+let currentBot: MiraiBot | undefined;
+
+export class MiraiBot extends BotNamespace implements Bot {
+  cmdHooks: BotCommand[] = [];
+
+  express = Express();
+  constructor(
+    mirai: Mirai | MiraiApiHttpConfig,
+    public readonly config: BotConfig
+  ) {
+    super(mirai, config);
+    currentBot = this;
+  }
+  async boot() {
+    await this.mirai.link(this.config.account);
+    await this.mirai.axios.post("/config", {
+      sessionKey: this.mirai.sessionKey,
+      cacheSize: 4096,
+      enableWebsocket: true,
+    });
+    this.express.use("/bull", UI);
+    this.express.engine("ejs", (ejs as any).__express);
+    this.express.set("view engine", "ejs");
+    this.express.set("views", resolve(__dirname, "../views"));
+
+    this.mirai.listen();
+    this.express.listen(8080, "0.0.0.0");
+
+    await super.boot();
+  }
+
+  /**
+   * @deprecated Use `register` instead
+   * */
+  registerCommand(cmd: string | BotCommandConfig, hook: CmdHook) {
+    this.cmdHooks.push(new BotCommand(this, cmd, hook));
+  }
+  /**
+   * @deprecated Use `register` instead
+   * */
+  registerPlugins(...plugins: ((bot: MiraiBot) => void)[]) {
+    plugins.forEach((i) => i(this));
   }
 }

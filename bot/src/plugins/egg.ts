@@ -1,9 +1,10 @@
-import { MiraiBot } from "../bot/Bot";
 import Axios from "axios";
-import { saveImg } from "../bot/utils/utils";
 
-export default function EggPlugin(bot: MiraiBot) {
-  bot.registerCommand(
+import { Bot } from "../bot/Bot";
+import { saveImg } from "../bot/utils";
+
+export default function EggPlugin(bot: Bot) {
+  bot.register(
     {
       cmd: "sucker",
     },
@@ -14,7 +15,7 @@ export default function EggPlugin(bot: MiraiBot) {
         )
       ).data
   );
-  bot.registerCommand(
+  bot.register(
     {
       cmd: "ctfer",
     },
@@ -26,7 +27,7 @@ export default function EggPlugin(bot: MiraiBot) {
       ).data
   );
   type Ret = { url?: string; path?: string };
-  bot.registerCommand("setu", async (msg, cmd, args) => {
+  bot.register("setu", async (msg, cmd, args) => {
     const api: Record<string, () => Ret | Promise<Ret>> = {
       a: () => ({
         url: "https://i.xinger.ink:4443/images.php",
@@ -111,7 +112,6 @@ export default function EggPlugin(bot: MiraiBot) {
           "setu",
           "setu.png"
         );
-        console.log("233");
         return { path: "setu.png" };
       },
     };

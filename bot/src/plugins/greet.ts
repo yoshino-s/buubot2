@@ -1,7 +1,6 @@
-import { MiraiBot } from "../bot/Bot";
+import { Bot } from "../bot/Bot";
 import { SwitchCommand } from "../bot/Command";
-import { TargetSetStorage } from "../bot/utils/storage";
-import { sendMsgQueue } from "../bot/utils/utils";
+import { sendMsgQueue, TargetSetStorage } from "../bot/utils";
 
 const morningRepeat = {
   cron: "0 7 * * *",
@@ -13,9 +12,9 @@ const nightRepeat = {
   tz: "Asia/Shanghai",
 };
 
-export default function GreetPlugin(bot: MiraiBot) {
+export default function GreetPlugin(bot: Bot) {
   const greetList = new TargetSetStorage("greetList");
-  bot.cmdHooks.add(
+  bot.register(
     new SwitchCommand(bot, "greet", greetList, false, (target, status) => {
       if (status) {
         sendMsgQueue.add(

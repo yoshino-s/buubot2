@@ -1,10 +1,9 @@
-import { MiraiBot } from "../bot/Bot";
-import { TargetMapStorage } from "../bot/utils/storage";
-import { extractTarget } from "../bot/utils/utils";
+import { Bot } from "../bot/Bot";
 import { CommandPermission } from "../bot/Command";
-export default function BannerPlugin(bot: MiraiBot) {
+import { extractTarget, TargetMapStorage } from "../bot/utils";
+export default function BannerPlugin(bot: Bot) {
   const banWorkMap = new TargetMapStorage<string[]>("banWord");
-  bot.registerCommand(
+  bot.register(
     {
       cmd: "ban",
       help: "Usage: ban word",
@@ -19,7 +18,7 @@ export default function BannerPlugin(bot: MiraiBot) {
       return `将对关键词"${args}"封禁。现在的封禁词列表：${w.join(",")}`;
     }
   );
-  bot.registerCommand(
+  bot.register(
     {
       cmd: "unban",
       help: "Usage: unban word",

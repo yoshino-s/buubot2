@@ -1,10 +1,11 @@
-import { MiraiBot } from "../bot/Bot";
 import Axios from "axios";
 import dayjs from "dayjs";
 import ch from "dayjs/locale/zh-cn";
-import relativeTime from "dayjs/plugin/relativeTime";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
+
+import { Bot } from "../bot/Bot";
 
 dayjs.extend(utc);
 dayjs.extend(localizedFormat);
@@ -21,8 +22,8 @@ type Event = {
 
 const format = (d: dayjs.Dayjs) => d.format("MMMD ddd HH:mm");
 
-export default function CalendarPlugin(bot: MiraiBot) {
-  bot.registerCommand(
+export default function CalendarPlugin(bot: Bot) {
+  bot.register(
     {
       cmd: "calendar",
       help: "calendar [today|recent(default))]",

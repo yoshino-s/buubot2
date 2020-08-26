@@ -10,7 +10,8 @@
   "scripts": {
     "postinstall": "node scripts/check.js",
     "config": "node scripts/config.js",
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
+    "lint": "cd bot && npm run lint"
   },
   "dependencies": {
     "chalk": "^4.1.0",
@@ -45,7 +46,7 @@
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+      "commit-msg": "npm run lint && commitlint -E HUSKY_GIT_PARAMS"
     }
   }
 }

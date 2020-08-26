@@ -1,8 +1,10 @@
-import { MiraiBot } from "../bot/Bot";
 import { VM } from "vm2";
+
+import { Bot } from "../bot/Bot";
+
 import { preventGroupMessageRecall } from "./recallMonitor";
-export default function CmdPlugin(bot: MiraiBot) {
-  bot.registerCommand(
+export default function CmdPlugin(bot: Bot) {
+  bot.register(
     {
       cmd: "exec",
       help: "exec cmd",

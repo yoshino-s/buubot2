@@ -1,8 +1,13 @@
-import { MiraiBot } from "./Bot";
 import { MessageType } from "mirai-ts";
-import { unserialize } from "./serialization";
-import { MapStorage, TargetSetStorage } from "./utils/storage";
-import { extractTarget, Target } from "./utils/utils";
+
+import { Bot } from "./Bot";
+import {
+  unserialize,
+  extractTarget,
+  MapStorage,
+  Target,
+  TargetSetStorage,
+} from "./utils";
 
 /**
  * 0b00000001 friend
@@ -21,7 +26,7 @@ export enum CommandPermission {
   temp = 0b00010000,
 }
 
-export interface MiraiBotCommandConfig {
+export interface BotCommandConfig {
   cmd: string;
   rule?: CommandPermission;
   alias?: string[] | string;
@@ -37,12 +42,12 @@ export type CmdHook = (
 ) => any;
 
 export default class MiraiBotCommand {
-  config: MiraiBotCommandConfig;
+  config: BotCommandConfig;
   hook: CmdHook;
   specialRules: MapStorage<number, CommandPermission>;
   constructor(
-    private readonly bot: MiraiBot,
-    cmd: string | MiraiBotCommandConfig,
+    private readonly bot: Bot,
+    cmd: string | BotCommandConfig,
     hook: CmdHook
   ) {
     if (typeof cmd === "string") {
@@ -58,7 +63,6 @@ export default class MiraiBotCommand {
   }
 
   setRule(groupId: number, rule: CommandPermission) {
-    console.log(groupId, rule);
     return this.specialRules.set(groupId, rule);
   }
 
@@ -131,7 +135,7 @@ export default class MiraiBotCommand {
 export class SwitchCommand extends MiraiBotCommand {
   set: TargetSetStorage;
   constructor(
-    bot: MiraiBot,
+    bot: Bot,
     cmd: string,
     set: TargetSetStorage,
     explicit = true,
@@ -146,7 +150,6 @@ export class SwitchCommand extends MiraiBotCommand {
         verify: (msg, cmd, args) => ["on", "off"].includes(args),
       },
       async (msg: MessageType.ChatMessage, cmd: string, args: string) => {
-        console.log(msg);
         const target = extractTarget(msg, explicit);
         if (args === "on") {
           await this.set.add(target);

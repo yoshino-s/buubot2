@@ -1,6 +1,6 @@
 type DePromise<T> = T extends Promise<infer R> ? R : T;
 
-const Async = {
+export const Async = {
   async map<T, R = any>(
     array: T[],
     cb: (value: T, index: number, array: T[]) => R | Promise<R>
@@ -21,5 +21,3 @@ const Async = {
     return array.filter((v, i) => res[i]);
   },
 };
-
-export default Async;

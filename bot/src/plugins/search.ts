@@ -1,7 +1,8 @@
-import { MiraiBot } from "../bot/Bot";
 import Axios from "axios";
-export default function SearchPlugin(bot: MiraiBot) {
-  bot.registerCommand(
+
+import { Bot } from "../bot/Bot";
+export default function SearchPlugin(bot: Bot) {
+  bot.register(
     {
       cmd: "search",
     },

@@ -1,14 +1,14 @@
-import { MiraiBot } from "../bot/Bot";
 import { MessageType } from "mirai-ts";
-import { serialize, unserialize } from "../bot/serialization";
+
+import { Bot } from "../bot/Bot";
+import { serialize, unserialize } from "../bot/utils";
 
 const preventRecallList = new Map<number, string>();
 
-export default function RecallMonitorPlugin(bot: MiraiBot) {
+export default function RecallMonitorPlugin(bot: Bot) {
   bot.mirai.on("GroupRecallEvent", async (e) => {
     const msg = preventRecallList.get(e.messageId);
     if (msg) {
-      console.log(msg);
       bot.mirai.api.sendGroupMessage(
         [
           {
