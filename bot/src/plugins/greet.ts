@@ -1,6 +1,7 @@
-import { Bot } from "../bot/Bot";
 import { SwitchCommand } from "../bot/Command";
 import { sendMsgQueue, TargetSetStorage } from "../bot/utils";
+import { UseCommand } from "../bot/utils/decorator";
+import { BotPlugin } from "../bot/Bot";
 
 const morningRepeat = {
   cron: "0 7 * * *",
@@ -12,10 +13,15 @@ const nightRepeat = {
   tz: "Asia/Shanghai",
 };
 
-export default function GreetPlugin(bot: Bot) {
-  const greetList = new TargetSetStorage("greetList");
-  bot.register(
-    new SwitchCommand(bot, "greet", greetList, false, (target, status) => {
+export default class GreetPlugin extends BotPlugin {
+  greetList = new TargetSetStorage("greetList");
+
+  @UseCommand
+  greet = new SwitchCommand(
+    "greet",
+    this.greetList,
+    false,
+    (target, status) => {
       if (status) {
         sendMsgQueue.add(
           { target: target, msg: "早上好" },
@@ -41,6 +47,6 @@ export default function GreetPlugin(bot: Bot) {
           jobId: `greet:night:${JSON.stringify(target)}`,
         });
       }
-    })
+    }
   );
 }

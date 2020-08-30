@@ -1,6 +1,7 @@
 import Axios from "axios";
 
-import { Bot } from "../bot/Bot";
+import { Args, Cmd } from "../bot/utils/decorator";
+import { BotPlugin } from "../bot/Bot";
 
 function cusScore(score: number) {
   if (score <= 1000) {
@@ -18,14 +19,14 @@ function cusScore(score: number) {
   return "yyds!";
 }
 
-export default function RankPlugin(bot: Bot) {
-  bot.register(
-    {
-      cmd: "rank",
-      help: "Usage: rank id",
-      verify: (msg, cmd, args) => !!args,
-    },
-    async (msg, cmd, args) =>
+export default class RankPlugin extends BotPlugin {
+  @Cmd({
+    cmd: "rank",
+    help: "Usage: rank id",
+    verify: (msg, cmd, args) => !!args,
+  })
+  async rank(@Args args: string) {
+    return (
       (
         await Axios.get("https://api.yoshino-s.online/buu/search", {
           params: {
@@ -33,27 +34,26 @@ export default function RankPlugin(bot: Bot) {
           },
         })
       ).data.message || "Internal Error"
-  );
-  bot.register(
-    {
-      cmd: "score",
-      help: "score id",
-      verify: (msg, cmd, args) => !!args,
-    },
-    async (msg, cmd, args) => {
-      const res = (
-        await Axios.get("https://api.yoshino-s.online/buu/score", {
-          params: {
-            name: args,
-          },
-        })
-      ).data as Record<
-        string,
-        { id: number; name: string; affiliation: string; total: number }
-      >;
-      return Object.values(res)
-        .map((i) => `${i.name}获得总分为${i.total}。${cusScore(i.total)}`)
-        .join("\n");
-    }
-  );
+    );
+  }
+  @Cmd({
+    cmd: "score",
+    help: "score id",
+    verify: (msg, cmd, args) => !!args,
+  })
+  async score(@Args args: string) {
+    const res = (
+      await Axios.get("https://api.yoshino-s.online/buu/score", {
+        params: {
+          name: args,
+        },
+      })
+    ).data as Record<
+      string,
+      { id: number; name: string; affiliation: string; total: number }
+    >;
+    return Object.values(res)
+      .map((i) => `${i.name}获得总分为${i.total}。${cusScore(i.total)}`)
+      .join("\n");
+  }
 }

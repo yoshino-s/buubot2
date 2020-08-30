@@ -1,12 +1,15 @@
 import { MessageType } from "mirai-ts";
+import { GroupRecallEvent } from "mirai-ts/dist/types/event-type";
 
-import { Bot } from "../bot/Bot";
 import { serialize, unserialize } from "../bot/utils";
+import { BotNamespace, BotPlugin } from "../bot/Bot";
+import { On, Event, Bot } from "../bot/utils/decorator";
 
 const preventRecallList = new Map<number, string>();
 
-export default function RecallMonitorPlugin(bot: Bot) {
-  bot.mirai.on("GroupRecallEvent", async (e) => {
+export default class RecallMonitorPlugin extends BotPlugin {
+  @On("GroupRecallEvent")
+  async(@Event e: GroupRecallEvent, @Bot bot: BotNamespace) {
     const msg = preventRecallList.get(e.messageId);
     if (msg) {
       bot.mirai.api.sendGroupMessage(
@@ -21,7 +24,7 @@ export default function RecallMonitorPlugin(bot: Bot) {
       );
       preventRecallList.delete(e.messageId);
     }
-  });
+  }
 }
 
 export function preventGroupMessageRecall(msg: MessageType.GroupMessage) {

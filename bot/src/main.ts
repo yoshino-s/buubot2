@@ -1,37 +1,33 @@
 import { MiraiBot, BotNamespace } from "./bot/Bot";
 import Config from "./config.json";
-import BannerPlugin from "./plugins/banner";
-import CalendarPlugin from "./plugins/calendar";
 import CmdPlugin from "./plugins/cmd";
 import EggPlugin from "./plugins/egg";
 import GreetPlugin from "./plugins/greet";
+import RepeaterPlugin from "./plugins/repeater";
+import RecallMonitorPlugin from "./plugins/recallMonitor";
+import BannerPlugin from "./plugins/banner";
+import CalendarPlugin from "./plugins/calendar";
 import GroupCmdManagePlugin from "./plugins/groupCmdManage";
 import RankPlugin from "./plugins/rank";
-import RecallMonitorPlugin from "./plugins/recallMonitor";
-import RepeaterPlugin from "./plugins/repeater";
 import SearchPlugin from "./plugins/search";
 
 const bot = new MiraiBot(Config.API, Config.Bot);
-
-const entertainment = new BotNamespace(bot);
-const ctf = new BotNamespace(bot);
-const utils = new BotNamespace(bot);
-
+const entertainment = new BotNamespace(bot, "entertainment");
+const utils = new BotNamespace(bot, "utils");
 entertainment.register(
-  EggPlugin,
-  RepeaterPlugin,
-  RecallMonitorPlugin,
   CmdPlugin,
-  GreetPlugin
+  EggPlugin,
+  GreetPlugin,
+  RepeaterPlugin,
+  RecallMonitorPlugin
 );
-ctf.register(RankPlugin, CalendarPlugin);
-utils.register(SearchPlugin, BannerPlugin);
+utils.register(BannerPlugin, CalendarPlugin, RankPlugin, SearchPlugin);
+
 bot.register(GroupCmdManagePlugin);
 
 async function bootstrap() {
   await bot.boot();
   await entertainment.boot();
-  await ctf.boot();
   await utils.boot();
 }
 

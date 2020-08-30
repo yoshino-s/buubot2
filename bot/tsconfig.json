@@ -10,7 +10,8 @@
     "strictNullChecks": true,
     "sourceMap": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "experimentalDecorators": true
   },
   "include": ["src/**/*"],
   "exclude": ["dist/**/*", "node_modules/**/*"]

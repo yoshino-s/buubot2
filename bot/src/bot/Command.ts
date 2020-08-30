@@ -1,6 +1,6 @@
 import { MessageType } from "mirai-ts";
 
-import { Bot } from "./Bot";
+import { BotNamespace } from "./Bot";
 import {
   unserialize,
   extractTarget,
@@ -45,11 +45,7 @@ export default class MiraiBotCommand {
   config: BotCommandConfig;
   hook: CmdHook;
   specialRules: MapStorage<number, CommandPermission>;
-  constructor(
-    private readonly bot: Bot,
-    cmd: string | BotCommandConfig,
-    hook: CmdHook
-  ) {
+  constructor(cmd: string | BotCommandConfig, hook: CmdHook) {
     if (typeof cmd === "string") {
       this.config = {
         cmd,
@@ -76,11 +72,16 @@ export default class MiraiBotCommand {
     );
   }
 
-  async run(msg: MessageType.ChatMessage, cmd: string, args: string) {
+  async run(
+    bot: BotNamespace,
+    msg: MessageType.ChatMessage,
+    cmd: string,
+    args: string
+  ) {
     if (cmd !== this.config.cmd && !this.config.alias?.includes(cmd)) {
       return;
     }
-    if (msg.sender.id !== this.bot.config.privilege) {
+    if (msg.sender.id !== bot.config.privilege) {
       const rule = await this.getRule(
         msg.type !== "FriendMessage" ? msg.sender.group.id : undefined
       );
@@ -116,13 +117,10 @@ export default class MiraiBotCommand {
     } else if (res !== undefined) {
       await msg.reply(unserialize(String(res)));
     }
+    return true;
   }
   get help(): string {
-    return (
-      "Usage: " +
-      this.bot.config.commandPrefix +
-      (this.config.help || this.config.cmd)
-    );
+    return "Usage:\n" + (this.config.help || this.config.cmd);
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   verifyArgs(msg: MessageType.ChatMessage, cmd: string, args: string) {
@@ -135,14 +133,12 @@ export default class MiraiBotCommand {
 export class SwitchCommand extends MiraiBotCommand {
   set: TargetSetStorage;
   constructor(
-    bot: Bot,
     cmd: string,
     set: TargetSetStorage,
     explicit = true,
     hook?: (target: Target, status: boolean) => any
   ) {
     super(
-      bot,
       {
         cmd,
         help: `${cmd} on|off`,

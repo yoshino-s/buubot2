@@ -1,8 +1,15 @@
 import { diffChars } from "diff";
+import { ChatMessage, GroupMessage } from "mirai-ts/dist/types/message-type";
 
-import { Bot } from "../bot/Bot";
-import { CommandPermission } from "../bot/Command";
-import { serialize, unserialize, SetStorage } from "../bot/utils";
+import {
+  serialize,
+  unserialize,
+  TargetSetStorage,
+  extractTarget,
+} from "../bot/utils";
+import { On, Event, UseCommand } from "../bot/utils/decorator";
+import { SwitchCommand } from "../bot/Command";
+import { BotPlugin } from "../bot/Bot";
 
 function similarity(s0: string, s1: string) {
   return (
@@ -12,12 +19,14 @@ function similarity(s0: string, s1: string) {
     ) / Math.max(s0.length, s1.length)
   );
 }
-export default function RepeaterPlugin(bot: Bot) {
-  const msgSet = new Map<number, [string, number]>();
-  bot.mirai.on("message", (msg) => {
+export default class RepeaterPlugin extends BotPlugin {
+  msgSet = new Map<number, [string, number]>();
+
+  @On("message")
+  repeat(@Event msg: ChatMessage) {
     if (msg.type === "FriendMessage") return;
     const plain = serialize(msg.messageChain);
-    const p = msgSet.get(msg.sender.group.id) ?? [plain, 0];
+    const p = this.msgSet.get(msg.sender.group.id) ?? [plain, 0];
     const s = similarity(plain, p[0]);
     if (s > 0.7) {
       p[1]++;
@@ -28,31 +37,20 @@ export default function RepeaterPlugin(bot: Bot) {
     if (p[1] === 5) {
       msg.reply(msg.messageChain);
     }
-    msgSet.set(msg.sender.group.id, p);
-  });
+    this.msgSet.set(msg.sender.group.id, p);
+  }
 
-  const preventFlashImage = new SetStorage<number>("preventFlashImage");
+  preventFlashImage = new TargetSetStorage("preventFlashImage");
 
-  bot.register(
-    {
-      cmd: "preventFlashImage",
-      help: "preventFlashImage on|off",
-      rule: CommandPermission.admin,
-      verify: (msg, cmd, args) => ["on", "off"].includes(args),
-    },
-    async (msg, cmd, args) => {
-      if (msg.type !== "GroupMessage") return;
-      if (args === "on") {
-        await preventFlashImage.add(msg.sender.group.id);
-      } else {
-        await preventFlashImage.remove(msg.sender.group.id);
-      }
-      return "OK";
-    }
+  @UseCommand
+  preventFlashImageCmd = new SwitchCommand(
+    "preventFlashImage",
+    this.preventFlashImage,
+    false
   );
-
-  bot.mirai.on("GroupMessage", async (msg) => {
-    if (await preventFlashImage.has(msg.sender.group.id)) {
+  @On("GroupMessage")
+  async flashImage(@Event msg: GroupMessage) {
+    if (await this.preventFlashImage.has(extractTarget(msg, false))) {
       msg.messageChain.forEach((m) => {
         if (m.type === "FlashImage") {
           msg.reply(
@@ -63,5 +61,5 @@ export default function RepeaterPlugin(bot: Bot) {
         }
       });
     }
-  });
+  }
 }

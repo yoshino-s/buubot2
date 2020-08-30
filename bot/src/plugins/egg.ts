@@ -1,33 +1,30 @@
 import Axios from "axios";
 
-import { Bot } from "../bot/Bot";
 import { saveImg } from "../bot/utils";
+import { Args, Cmd } from "../bot/utils/decorator";
+import { BotPlugin } from "../bot/Bot";
 
-export default function EggPlugin(bot: Bot) {
-  bot.register(
-    {
-      cmd: "sucker",
-    },
-    async () =>
-      (
-        await Axios.get(
-          "https://hitokoto.yoshino-s.online/?c=a&encode=text&max_length=100"
-        )
-      ).data
-  );
-  bot.register(
-    {
-      cmd: "ctfer",
-    },
-    async () =>
-      (
-        await Axios.get(
-          "https://hitokoto.yoshino-s.online/?c=c&encode=text&max_length=100"
-        )
-      ).data
-  );
-  type Ret = { url?: string; path?: string };
-  bot.register("setu", async (msg, cmd, args) => {
+type Ret = { url?: string; path?: string };
+
+export default class EggPlugin extends BotPlugin {
+  @Cmd("sucker")
+  async sucker() {
+    return (
+      await Axios.get(
+        "https://hitokoto.yoshino-s.online/?c=a&encode=text&max_length=100"
+      )
+    ).data;
+  }
+  @Cmd("ctfer")
+  async ctfer() {
+    return (
+      await Axios.get(
+        "https://hitokoto.yoshino-s.online/?c=c&encode=text&max_length=100"
+      )
+    ).data;
+  }
+  @Cmd("setu")
+  async setu(@Args args: string) {
     const api: Record<string, () => Ret | Promise<Ret>> = {
       a: () => ({
         url: "https://i.xinger.ink:4443/images.php",
@@ -126,5 +123,5 @@ export default function EggPlugin(bot: Bot) {
     } else {
       return `[[Image:path=${encodeURIComponent(a.path || "setu")}]]`;
     }
-  });
+  }
 }

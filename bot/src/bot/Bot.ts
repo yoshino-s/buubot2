@@ -1,13 +1,15 @@
 import { resolve } from "path";
 
 import Mirai, { MiraiApiHttpConfig, MessageType, EventType } from "mirai-ts";
+import "reflect-metadata";
 import Express from "express";
 import ejs from "ejs";
 import { UI } from "bull-board";
-import { sendMessage } from "mirai-ts/dist/types/api/response";
+import log4js, { Logger } from "log4js";
 
-import BotCommand, { BotCommandConfig, CmdHook } from "./Command";
+import BotCommand from "./Command";
 import { Target, unserialize } from "./utils";
+import { use } from "./utils/decorator";
 
 declare type Data<
   T extends "message" | EventType.EventType | MessageType.ChatMessageType
@@ -17,8 +19,6 @@ declare type Data<
   ? MessageType.ChatMessageMap[T]
   : MessageType.ChatMessage;
 
-export type BotPlugin = (bot: Bot) => any;
-
 export type BotHook = typeof Mirai.prototype.on;
 
 export interface BotConfig {
@@ -27,44 +27,41 @@ export interface BotConfig {
   privilege?: number;
 }
 
-export interface Bot {
-  mirai: Mirai;
-  config: BotConfig;
-  cmdHooks: BotCommand[];
-  boot(): Promise<any>;
-  register(data: string | BotCommandConfig, cb: CmdHook): void;
-  register(
-    data: BotPlugin | BotCommand,
-    ...args: (BotPlugin | BotCommand)[]
-  ): void;
-  send(
-    target: Target,
-    msg: string,
-    quote?: number
-  ): Promise<sendMessage> | undefined;
-  enable(): void;
-  disable(): void;
+export abstract class BotPlugin {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  boot(bot: BotNamespace) {
+    //
+  }
 }
 
-export class BotNamespace implements Bot {
+export class BotNamespace {
+  name: string;
+  logger: Logger;
   mirai: Mirai;
   readonly config: BotConfig;
   cmdHooks: BotCommand[] = [];
   private _enabled = false;
   constructor(mirai: Mirai | MiraiApiHttpConfig, config: BotConfig);
-  constructor(mirai: Bot);
-  constructor(mirai: Mirai | MiraiApiHttpConfig | Bot, config?: BotConfig) {
-    if (config) {
+  constructor(mirai: BotNamespace, name: string);
+  constructor(
+    mirai: Mirai | MiraiApiHttpConfig | BotNamespace,
+    config: BotConfig | string
+  ) {
+    if (typeof config !== "string") {
       if (mirai instanceof Mirai) {
         this.mirai = mirai;
       } else {
         this.mirai = new Mirai(mirai as MiraiApiHttpConfig);
       }
       this.config = config;
+      this.name = "default";
     } else {
-      this.mirai = (mirai as Bot).mirai;
-      this.config = (mirai as Bot).config;
+      this.mirai = (mirai as BotNamespace).mirai;
+      this.config = (mirai as BotNamespace).config;
+      this.name = config;
     }
+    this.logger = log4js.getLogger(this.name);
+    this.logger.level = "ALL";
   }
   on<T extends "message" | EventType.EventType | MessageType.ChatMessageType>(
     event: T,
@@ -80,7 +77,7 @@ export class BotNamespace implements Bot {
     this.on("message", (msg) => this.messageHook(msg));
     this.enable();
   }
-  private messageHook(msg: MessageType.ChatMessage) {
+  private async messageHook(msg: MessageType.ChatMessage) {
     const plain = msg.plain;
     if (
       plain &&
@@ -96,29 +93,22 @@ export class BotNamespace implements Bot {
         )
         .trim()
         .split(" ");
-      this.cmdHooks.forEach((v) =>
-        v.run(msg, cmdline[0], cmdline.slice(1).join(" "))
-      );
+      for (const cmd of this.cmdHooks) {
+        if (await cmd.run(this, msg, cmdline[0], cmdline.slice(1).join(" "))) {
+          this.logger.info(`Trigger cmd: ${cmdline[0]}`);
+          break;
+        }
+      }
     }
   }
-  register(data: string | BotCommandConfig, cb: CmdHook): void;
-  register(
-    data: BotPlugin | BotCommand,
-    ...args: (BotPlugin | BotCommand)[]
-  ): void;
-  register(
-    arg0: BotPlugin | BotCommand | string | BotCommandConfig,
-    arg1?: CmdHook | BotPlugin | BotCommand,
-    ...args: (BotPlugin | BotCommand)[]
-  ) {
-    args.forEach((i) => this.register(i));
-    if (typeof arg0 === "function") {
-      arg0(this);
-    } else if (arg0 instanceof BotCommand) {
-      this.cmdHooks.push(arg0);
-    } else {
-      this.cmdHooks.push(new BotCommand(this, arg0, arg1 as CmdHook));
-    }
+  register(...args: (BotCommand | { new (): BotPlugin })[]) {
+    args.forEach((arg) => {
+      if (arg instanceof BotCommand) {
+        this.cmdHooks.push(arg);
+      } else {
+        use(new arg(), this);
+      }
+    });
   }
   send(target: Target, msg: string, quote?: number) {
     if (target.group) {
@@ -159,7 +149,7 @@ export class BotNamespace implements Bot {
 }
 let currentBot: MiraiBot | undefined;
 
-export class MiraiBot extends BotNamespace implements Bot {
+export class MiraiBot extends BotNamespace {
   cmdHooks: BotCommand[] = [];
 
   express = Express();
@@ -186,18 +176,5 @@ export class MiraiBot extends BotNamespace implements Bot {
     this.express.listen(8080, "0.0.0.0");
 
     await super.boot();
-  }
-
-  /**
-   * @deprecated Use `register` instead
-   * */
-  registerCommand(cmd: string | BotCommandConfig, hook: CmdHook) {
-    this.cmdHooks.push(new BotCommand(this, cmd, hook));
-  }
-  /**
-   * @deprecated Use `register` instead
-   * */
-  registerPlugins(...plugins: ((bot: MiraiBot) => void)[]) {
-    plugins.forEach((i) => i(this));
   }
 }

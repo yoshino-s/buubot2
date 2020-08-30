@@ -1,13 +1,12 @@
 import Axios from "axios";
 
-import { Bot } from "../bot/Bot";
-export default function SearchPlugin(bot: Bot) {
-  bot.register(
-    {
-      cmd: "search",
-    },
-    (msg, cmd, args) =>
-      Axios.get(
+import { Cmd, Args } from "../bot/utils/decorator";
+import { BotPlugin } from "../bot/Bot";
+export default class SearchPlugin extends BotPlugin {
+  @Cmd("search")
+  async search(@Args args: string) {
+    try {
+      const i = await Axios.get(
         `https://wiki.yoshino-s.workers.dev/api/rest_v1/page/summary/${encodeURIComponent(
           args
         )}`,
@@ -16,8 +15,10 @@ export default function SearchPlugin(bot: Bot) {
             "accept-language": "zh-CN,zh;q=0.9",
           },
         }
-      )
-        .then((i) => i.data.extract)
-        .catch(() => "找不到呢")
-  );
+      );
+      return i.data.extract as string;
+    } catch (e) {
+      return "找不到呢";
+    }
+  }
 }
