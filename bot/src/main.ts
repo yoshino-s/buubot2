@@ -9,6 +9,7 @@ import BannerPlugin from "./plugins/banner";
 import CalendarPlugin from "./plugins/calendar";
 import RankPlugin from "./plugins/rank";
 import SearchPlugin from "./plugins/search";
+import FaqPlugin from "./plugins/faq";
 
 const bot = new MiraiBot(Config.API, Config.Bot);
 const entertainment = new BotNamespace(bot, "entertainment");
@@ -20,7 +21,13 @@ entertainment.register(
   RepeaterPlugin,
   RecallMonitorPlugin
 );
-utils.register(BannerPlugin, CalendarPlugin, RankPlugin, SearchPlugin);
+utils.register(
+  BannerPlugin,
+  CalendarPlugin,
+  RankPlugin,
+  SearchPlugin,
+  FaqPlugin
+);
 
 async function bootstrap() {
   await bot.boot();

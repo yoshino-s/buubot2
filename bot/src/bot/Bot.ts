@@ -190,7 +190,7 @@ export class MiraiBot extends BotNamespace {
 
     await super.boot();
 
-    this.register(BuiltinPlugin);
+    this.register(BuiltinPlugin as any);
 
     process.on("beforeExit", () => {
       this.logger.info("Exiting...");

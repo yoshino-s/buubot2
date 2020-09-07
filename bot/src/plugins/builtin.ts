@@ -2,14 +2,14 @@ import { ChatMessage } from "mirai-ts/dist/types/message-type";
 
 import { Async } from "../utils";
 import { Args, Bot, Cmd, Msg } from "../utils/decorator";
-import { BotNamespace, BotPlugin } from "../bot/Bot";
+import { BotNamespace } from "../bot/Bot";
 import {
   CommandPermission,
   permissionInstruction,
 } from "../command/Permission";
 import MiraiBotCommand from "../command/Command";
 
-export default class BuiltinPlugin extends BotPlugin {
+export default class BuiltinPlugin {
   extractAllCommand(bot: BotNamespace): MiraiBotCommand[] {
     return bot.cmdHooks.concat(
       ...bot.children.map((child) => this.extractAllCommand(child))

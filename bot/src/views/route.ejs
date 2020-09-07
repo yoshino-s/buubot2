@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+  <title>如何找到你的宿舍</title>
+  <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
+  <style>
+    html,
+    body,
+    #container {
+      height: 100%;
+      width: 100%;
+    }
+
+    .amap-icon img {
+      width: 25px;
+      height: 34px;
+    }
+
+    .amap-marker-label {
+      border: 0;
+      background-color: transparent;
+    }
+
+    .info {
+      position: relative;
+      margin: 0;
+      top: 0;
+      right: 0;
+      min-width: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="container"></div>
+  <script src="https://webapi.amap.com/maps?v=2.0&key=75346d09b3361e15eb2a0d45bcf1b5d0&plugin=AMap.PolyEditor"></script>
+  <script src="https://webapi.amap.com/maps?v=2.0&key=75346d09b3361e15eb2a0d45bcf1b5d0&plugin=AMap.Walking"></script>
+  <script type="text/javascript">
+    var map = new AMap.Map('container', {
+      resizeEnable: true,
+      center: [121.406542, 31.227132],
+      zoom: 16
+    });
+
+    function addLabel(name, pos, direction) {
+      const marker = new AMap.Marker({
+        position: pos,
+        icon: '//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-default.png',
+        anchor: 'bottom-center',
+        offset: new AMap.Pixel(0, 0),
+      });
+
+      marker.setMap(map);
+      marker.setLabel({
+        direction: direction || 'top',
+        content: `<div class='info'>${name}</div>`,
+      });
+      return marker;
+    }
+    function addRoute(path) {
+      const routeLine = new AMap.Polyline({
+        path: path,
+        isOutline: true,
+        outlineColor: '#ffeeee',
+        borderWeight: 2,
+        strokeWeight: 5,
+        strokeColor: '#0091ff',
+        lineJoin: 'round'
+      });
+      routeLine.setMap(map);
+      return routeLine;
+    }
+    addLabel("金沙江路门", [121.406009, 31.231758]);
+    addLabel("第四宿舍", [121.403103, 31.229008], "left");
+    addLabel("第五宿舍", [121.403543, 31.229705], "left");
+    addLabel("这里在修路", [121.405804, 31.230737], "left");
+    addLabel("中山路门", [121.410135, 31.228037], "right");
+    addLabel("枣阳路门<br/>不推荐走这里", [121.402663, 31.224001], "left")
+    const path = [[121.406009, 31.231758], [121.405963, 31.23135], [121.405948, 31.231246], [121.405918, 31.2312], [121.406221, 31.230759], [121.406388, 31.230448], [121.405796, 31.230247], [121.405736, 31.230357], [121.405007, 31.230124], [121.404977, 31.230026], [121.404492, 31.229845], [121.404378, 31.229929], [121.403589, 31.229715], [121.403657, 31.22941], [121.403035, 31.229261], [121.403103, 31.229008]]
+    addRoute(path);
+    const p2 = [[121.41011, 31.228029], [121.407209, 31.227323], [121.407165, 31.227375], [121.407095, 31.227406], [121.407043, 31.227394], [121.406817, 31.22735], [121.406789, 31.227339], [121.406752, 31.227273], [121.406745, 31.227214], [121.406343, 31.227115], [121.405615, 31.226991], [121.405547, 31.227066], [121.405422, 31.227109], [121.404571, 31.226904], [121.404484, 31.226956], [121.404415, 31.226953], [121.404055, 31.22816], [121.403876, 31.228771], [121.403657, 31.22941]]
+    addRoute(p2);
+    map.setFitView(null, true, [60, 60, 60, 60]);
+  </script>
+</body>
+
+</html>
