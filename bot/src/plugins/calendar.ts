@@ -6,7 +6,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
 import { ChatMessage } from "mirai-ts/dist/types/message-type";
 
-import { Args, Cmd, Msg } from "../bot/utils/decorator";
+import { Args, Cmd, Msg } from "../utils/decorator";
 import { BotPlugin } from "../bot/Bot";
 
 dayjs.extend(utc);

@@ -1,7 +1,7 @@
 import Axios from "axios";
 
-import { saveImg } from "../bot/utils";
-import { Args, Cmd } from "../bot/utils/decorator";
+import { saveImg } from "../utils";
+import { Args, Cmd } from "../utils/decorator";
 import { BotPlugin } from "../bot/Bot";
 
 type Ret = { url?: string; path?: string };

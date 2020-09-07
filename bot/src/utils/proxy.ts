@@ -1,7 +1,7 @@
 import Axios, { AxiosInstance } from "axios";
 import { SocksProxyAgent } from "socks-proxy-agent";
 
-import Config from "../../config.json";
+import Config from "../config.json";
 
 export let agent: AxiosInstance;
 

@@ -1,7 +1,7 @@
 import { ChatMessage } from "mirai-ts/dist/types/message-type";
 import { VM } from "vm2";
 
-import { Args, Cmd, Msg } from "../bot/utils/decorator";
+import { Args, Cmd, Msg } from "../utils/decorator";
 import { BotPlugin } from "../bot/Bot";
 
 import { preventGroupMessageRecall } from "./recallMonitor";

@@ -6,9 +6,9 @@ import {
   unserialize,
   TargetSetStorage,
   extractTarget,
-} from "../bot/utils";
-import { On, Event, UseCommand } from "../bot/utils/decorator";
-import { SwitchCommand } from "../bot/Command";
+} from "../utils";
+import { On, Event, UseCommand } from "../utils/decorator";
+import { SwitchCommand } from "../command/Command";
 import { BotPlugin } from "../bot/Bot";
 
 function similarity(s0: string, s1: string) {

@@ -7,9 +7,11 @@ import ejs from "ejs";
 import { UI } from "bull-board";
 import log4js, { Logger } from "log4js";
 
-import BotCommand from "./Command";
-import { Target, unserialize } from "./utils";
-import { use } from "./utils/decorator";
+import { Target, unserialize } from "../utils";
+import { use } from "../utils/decorator";
+import { Async } from "../utils/async";
+import BotCommand from "../command/Command";
+import BuiltinPlugin from "../plugins/builtin";
 
 declare type Data<
   T extends "message" | EventType.EventType | MessageType.ChatMessageType
@@ -41,6 +43,9 @@ export class BotNamespace {
   readonly config: BotConfig;
   cmdHooks: BotCommand[] = [];
   private _enabled = false;
+  parent?: BotNamespace;
+  children: BotNamespace[] = [];
+
   constructor(mirai: Mirai | MiraiApiHttpConfig, config: BotConfig);
   constructor(mirai: BotNamespace, name: string);
   constructor(
@@ -59,6 +64,8 @@ export class BotNamespace {
       this.mirai = (mirai as BotNamespace).mirai;
       this.config = (mirai as BotNamespace).config;
       this.name = config;
+      this.parent = mirai as BotNamespace;
+      (mirai as BotNamespace).addChild(this);
     }
     this.logger = log4js.getLogger(this.name);
     this.logger.level = "ALL";
@@ -76,6 +83,7 @@ export class BotNamespace {
   async boot() {
     this.on("message", (msg) => this.messageHook(msg));
     this.enable();
+    await Async.forEach(this.children, (child) => child.boot());
   }
   private async messageHook(msg: MessageType.ChatMessage) {
     const plain = msg.plain;
@@ -136,15 +144,20 @@ export class BotNamespace {
   }
   enable() {
     this._enabled = true;
+    this.children.forEach((child) => child.enable());
   }
   disable() {
     this._enabled = false;
+    this.children.forEach((child) => child.disable());
   }
   static getCurrentBot(): MiraiBot {
     if (!currentBot) {
       throw new Error("No current bot!");
     }
     return currentBot;
+  }
+  addChild(bot: BotNamespace) {
+    this.children.push(bot);
   }
 }
 let currentBot: MiraiBot | undefined;
@@ -176,5 +189,11 @@ export class MiraiBot extends BotNamespace {
     this.express.listen(8080, "0.0.0.0");
 
     await super.boot();
+
+    this.register(BuiltinPlugin);
+
+    process.on("beforeExit", () => {
+      this.logger.info("Exiting...");
+    });
   }
 }

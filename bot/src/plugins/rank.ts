@@ -1,6 +1,6 @@
 import Axios from "axios";
 
-import { Args, Cmd } from "../bot/utils/decorator";
+import { Args, Cmd } from "../utils/decorator";
 import { BotPlugin } from "../bot/Bot";
 
 function cusScore(score: number) {

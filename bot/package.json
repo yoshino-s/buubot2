@@ -20,7 +20,7 @@
     "express": "^4.17.1",
     "jimp": "^0.16.0",
     "log4js": "^6.3.0",
-    "mirai-ts": "^0.5.2",
+    "mirai-ts": "^0.6.1",
     "redis": "^3.0.2",
     "rss-parser": "^3.8.0",
     "socks-proxy-agent": "^5.0.0",

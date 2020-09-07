@@ -2,11 +2,9 @@
 import "reflect-metadata";
 import { MessageType, EventType } from "mirai-ts";
 
-import MiraiBotCommand, {
-  BotCommandConfig,
-  CommandPermission,
-} from "../Command";
-import { BotNamespace, BotPlugin } from "../Bot";
+import MiraiBotCommand, { BotCommandConfig } from "../command/Command";
+import { BotNamespace, BotPlugin } from "../bot/Bot";
+import { CommandPermission } from "../command/Permission";
 
 export function On(
   event: EventType.EventType | MessageType.ChatMessageType | "message"
@@ -71,23 +69,23 @@ export const Message = Msg;
 export const Args: ParameterDecorator = Param("args");
 
 function extractCommand(bot: BotNamespace, instance: BotPlugin) {
-  instance = Object.getPrototypeOf(instance);
-  const methodsNames = Object.getOwnPropertyNames(instance).filter(
+  const prototype = Object.getPrototypeOf(instance);
+  const methodsNames = Object.getOwnPropertyNames(prototype).filter(
     (item) =>
       item !== "constructor" &&
-      typeof (instance as any)[item] === "function" &&
-      Reflect.getMetadata("command", instance, item)
+      typeof (prototype as any)[item] === "function" &&
+      Reflect.getMetadata("command", prototype, item)
   );
 
   return methodsNames
     .map((methodName) => {
       const command = Reflect.getMetadata(
         "command",
-        instance,
+        prototype,
         methodName
       ) as BotCommandConfig;
       const argList: string[] =
-        Reflect.getMetadata("args", instance, methodName) ?? [];
+        Reflect.getMetadata("args", prototype, methodName) ?? [];
       return new MiraiBotCommand(command.cmd, (msg, cmd, args) => {
         const argument = argList.map((i) => {
           switch (i) {
@@ -116,21 +114,21 @@ function extractCommand(bot: BotNamespace, instance: BotPlugin) {
 }
 
 function extractOn(bot: BotNamespace, instance: BotPlugin) {
-  instance = Object.getPrototypeOf(instance);
-  const methodsNames = Object.getOwnPropertyNames(instance).filter(
+  const prototype = Object.getPrototypeOf(instance);
+  const methodsNames = Object.getOwnPropertyNames(prototype).filter(
     (item) =>
       item !== "constructor" &&
-      typeof (instance as any)[item] === "function" &&
-      Reflect.getMetadata("event", instance, item)
+      typeof (prototype as any)[item] === "function" &&
+      Reflect.getMetadata("on", prototype, item)
   );
 
   return methodsNames.forEach((methodName) => {
-    const config = Reflect.getMetadata("on", instance, methodName) as
+    const config = Reflect.getMetadata("on", prototype, methodName) as
       | EventType.EventType
       | MessageType.ChatMessageType
       | "message";
     const argList: string[] =
-      Reflect.getMetadata("args", instance, methodName) ?? [];
+      Reflect.getMetadata("args", prototype, methodName) ?? [];
 
     bot.on(config, (e) => {
       const argument = argList.map((i) => {
@@ -138,6 +136,7 @@ function extractOn(bot: BotNamespace, instance: BotPlugin) {
           case "bot":
             return bot;
           case "event":
+          case "msg":
             return e;
           default:
             return undefined;

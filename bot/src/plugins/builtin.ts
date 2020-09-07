@@ -1,20 +1,26 @@
 import { ChatMessage } from "mirai-ts/dist/types/message-type";
 
-import { CommandPermission } from "../bot/Command";
-import { Async } from "../bot/utils";
-import { Args, Bot, Cmd, Msg } from "../bot/utils/decorator";
+import { Async } from "../utils";
+import { Args, Bot, Cmd, Msg } from "../utils/decorator";
 import { BotNamespace, BotPlugin } from "../bot/Bot";
+import {
+  CommandPermission,
+  permissionInstruction,
+} from "../command/Permission";
+import MiraiBotCommand from "../command/Command";
 
-export default class GroupCmdManagePlugin extends BotPlugin {
+export default class BuiltinPlugin extends BotPlugin {
+  extractAllCommand(bot: BotNamespace): MiraiBotCommand[] {
+    return bot.cmdHooks.concat(
+      ...bot.children.map((child) => this.extractAllCommand(child))
+    );
+  }
+
   @Cmd({
     cmd: "GroupCmd",
-    help: `GroupCmd list | (set {cmd} {rule}) | mute
-Rule:
-* 0b00000001 friend
-* 0b00000010 group member
-* 0b00000100 group admin
-* 0b00001000 group owner
-* 0b00010000 temp chat`,
+    help:
+      `GroupCmd list | (set {cmd} {rule}) | mute
+Rule:` + permissionInstruction,
     rule: CommandPermission.admin,
     verify: (msg, cmd, args) => {
       if (args === "list") return true;
@@ -30,7 +36,7 @@ Rule:
   ) {
     if (msg.type === "FriendMessage") return;
     const id = msg.sender.group.id;
-    const c = bot.cmdHooks;
+    const c = this.extractAllCommand(bot);
     if (args === "list")
       return (
         `List of cmd in ${msg.sender.group.name}(${id})\n` +

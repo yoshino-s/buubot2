@@ -7,8 +7,8 @@ import StrictEventEmitter from "strict-event-emitter-types";
 import { setQueues } from "bull-board";
 import { MessageType } from "mirai-ts";
 
-import Config from "../../config.json";
-import { MiraiBot } from "../Bot";
+import Config from "../config.json";
+import { MiraiBot } from "../bot/Bot";
 
 import { textify } from "./textify";
 
@@ -72,3 +72,4 @@ export * from "./proxy";
 export * from "./storage";
 export * from "./textify";
 export * from "./serialization";
+export * as Decorator from "./decorator";

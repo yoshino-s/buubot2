@@ -1,6 +1,6 @@
-import { SwitchCommand } from "../bot/Command";
-import { sendMsgQueue, TargetSetStorage } from "../bot/utils";
-import { UseCommand } from "../bot/utils/decorator";
+import { SwitchCommand } from "../command/Command";
+import { sendMsgQueue, TargetSetStorage } from "../utils";
+import { UseCommand } from "../utils/decorator";
 import { BotPlugin } from "../bot/Bot";
 
 const morningRepeat = {

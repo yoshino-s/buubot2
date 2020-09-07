@@ -7,7 +7,6 @@ import RepeaterPlugin from "./plugins/repeater";
 import RecallMonitorPlugin from "./plugins/recallMonitor";
 import BannerPlugin from "./plugins/banner";
 import CalendarPlugin from "./plugins/calendar";
-import GroupCmdManagePlugin from "./plugins/groupCmdManage";
 import RankPlugin from "./plugins/rank";
 import SearchPlugin from "./plugins/search";
 
@@ -23,12 +22,8 @@ entertainment.register(
 );
 utils.register(BannerPlugin, CalendarPlugin, RankPlugin, SearchPlugin);
 
-bot.register(GroupCmdManagePlugin);
-
 async function bootstrap() {
   await bot.boot();
-  await entertainment.boot();
-  await utils.boot();
 }
 
 bootstrap();

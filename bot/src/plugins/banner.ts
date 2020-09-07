@@ -1,8 +1,8 @@
 import { ChatMessage, GroupMessage } from "mirai-ts/dist/types/message-type";
 
-import { CommandPermission } from "../bot/Command";
-import { extractTarget, TargetMapStorage } from "../bot/utils";
-import { Args, Bot, Cmd, Msg, On } from "../bot/utils/decorator";
+import { CommandPermission } from "../command/Permission";
+import { extractTarget, TargetMapStorage } from "../utils";
+import { Args, Bot, Cmd, Msg, On } from "../utils/decorator";
 import { BotNamespace, BotPlugin } from "../bot/Bot";
 export default class BannerPlugin extends BotPlugin {
   banWorkMap = new TargetMapStorage<string[]>("banWord");
@@ -38,12 +38,16 @@ export default class BannerPlugin extends BotPlugin {
     const w = (await this.banWorkMap.get(target)) || [];
     const plain = msg.plain.toLowerCase();
     if (w.some((v) => plain.includes(v))) {
-      await bot.mirai.api.recall(msg);
-      await bot.mirai.api.mute(msg.sender.group.id, msg.sender.id, 60 * 60);
-      await bot.send(
-        target,
-        `由于${msg.sender.memberName}触发了封禁关键词，已将其封禁，下不为例。`
-      );
+      try {
+        await bot.mirai.api.recall(msg);
+        await bot.mirai.api.mute(msg.sender.group.id, msg.sender.id, 60 * 60);
+        await bot.send(
+          target,
+          `由于${msg.sender.memberName}触发了封禁关键词，已将其封禁，下不为例。`
+        );
+      } catch (e) {
+        bot.logger.error(e.response.data);
+      }
     }
   }
 }

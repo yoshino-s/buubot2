@@ -2,8 +2,8 @@ import { promisify } from "util";
 
 import redis from "redis";
 
-import Config from "../../config.json";
-import { MiraiBot } from "../Bot";
+import Config from "../config.json";
+import { MiraiBot } from "../bot/Bot";
 
 import { Async } from "./async";
 

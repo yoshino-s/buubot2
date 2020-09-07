@@ -1,9 +1,9 @@
 import { MessageType } from "mirai-ts";
 import { GroupRecallEvent } from "mirai-ts/dist/types/event-type";
 
-import { serialize, unserialize } from "../bot/utils";
+import { serialize, unserialize } from "../utils";
 import { BotNamespace, BotPlugin } from "../bot/Bot";
-import { On, Event, Bot } from "../bot/utils/decorator";
+import { On, Event, Bot } from "../utils/decorator";
 
 const preventRecallList = new Map<number, string>();
 

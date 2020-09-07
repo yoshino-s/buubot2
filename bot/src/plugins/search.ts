@@ -1,6 +1,6 @@
 import Axios from "axios";
 
-import { Cmd, Args } from "../bot/utils/decorator";
+import { Cmd, Args } from "../utils/decorator";
 import { BotPlugin } from "../bot/Bot";
 export default class SearchPlugin extends BotPlugin {
   @Cmd("search")
