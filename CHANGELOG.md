@@ -1,6 +1,38 @@
 # Changelog
 
 
+## [2.0.0](https://github.com/Yoshino-s/buubot2/compare/v1.0.3...v2.0.0) (2020-09-07)
+
+
+### Features
+
+* **ban:** add banner plugin ([86ea107](https://github.com/Yoshino-s/buubot2/commit/86ea1074edc768c2fa78fe8f2bd157fd52d01e57))
+* **cmd prefix:** allow set multiple command prefix ([eb15e2f](https://github.com/Yoshino-s/buubot2/commit/eb15e2f04249ddaa0cf693890ff15b0c839ca4a9))
+* **ctfer:** add ctfer cmd ([489bcfd](https://github.com/Yoshino-s/buubot2/commit/489bcfd15617b4fe12d5ee4ecab70703c49d83fa))
+* **decorator:** use decorator to reconstruct plugin ([7b71d3e](https://github.com/Yoshino-s/buubot2/commit/7b71d3e162b0a473f87eb56ea626897755e15978))
+* **greet:** add greet plugin ([0c73ca9](https://github.com/Yoshino-s/buubot2/commit/0c73ca9c4a7dfab40ddb399972b3a4a9671f459b))
+* **search:** add search plugin ([8c3a084](https://github.com/Yoshino-s/buubot2/commit/8c3a0848d17ee980f553b43abbf7a750afe99250))
+* **setu:** add data ([0b04b20](https://github.com/Yoshino-s/buubot2/commit/0b04b20501aa0ef2f44ae01410e635654f51f284))
+* **setu:** add hide api ([c4212bc](https://github.com/Yoshino-s/buubot2/commit/c4212bc7b4bd274d871a9704f2cfaf0047a52e4a))
+* **web:** add web page of bot ([f89b8e1](https://github.com/Yoshino-s/buubot2/commit/f89b8e1899cd41e7634e19bffd9bf10d8d7363a1))
+
+
+### Bug Fixes
+
+* **ban:** add recall msg ([f49adae](https://github.com/Yoshino-s/buubot2/commit/f49adaeb936edec1c6077c5cb51f4a04d2479f3b))
+* **ban:** fix ban ([178c0d4](https://github.com/Yoshino-s/buubot2/commit/178c0d4f9586e5405578aa68b8e9ddd0343351df))
+* **banner&groupcmd:** fix some bug ([9851057](https://github.com/Yoshino-s/buubot2/commit/9851057d5a4b308df9477e2bbff5ae8a1b7f335d))
+* **config:** fix a bug in config.js ([d2c1a77](https://github.com/Yoshino-s/buubot2/commit/d2c1a77f537fe0c95a973a1f7f689a45cf95a10b))
+* **config:** fix one more bug in config.js ([c542c89](https://github.com/Yoshino-s/buubot2/commit/c542c892cdd9dea13c24d6545e36ef6821c0f4c7))
+* **dependencies:** fix wrong dep ([47bd774](https://github.com/Yoshino-s/buubot2/commit/47bd7748272b50b1795725d38f26a048865d190b))
+* **ncc:** fix a bug with ncc and bull ([c9996ec](https://github.com/Yoshino-s/buubot2/commit/c9996eca5d832ac3fa098f5fcbb5a854e6edcd2d))
+* **prefix:** fix bug of last commit ([6c1e136](https://github.com/Yoshino-s/buubot2/commit/6c1e13676663e3e041c6f9c61ad3c3155844abc5))
+* **search:** move proxy to cloudflare ([b0d2a33](https://github.com/Yoshino-s/buubot2/commit/b0d2a33457fa1872792b1d42cb41bfaba8199e54))
+* **setu:** fix a tiny bug ([0a2cd66](https://github.com/Yoshino-s/buubot2/commit/0a2cd668fa583ee4c38de67f7b12408ecda43975))
+* **setu:** fix font issue ([b45d94e](https://github.com/Yoshino-s/buubot2/commit/b45d94e45cc0e656a5e15c497662879b26e854ac))
+* **storage:** fix bug ([4e6fbc6](https://github.com/Yoshino-s/buubot2/commit/4e6fbc6300a24c84ae08000fe2cea59f83749782))
+* **web:** move fastify to express due to some problems ([9313dce](https://github.com/Yoshino-s/buubot2/commit/9313dce625d5427ffeb6d1a89b38327dd6c9079d))
+
 ### [1.0.3](https://github.com/Yoshino-s/buubot2/compare/v1.0.2...v1.0.3) (2020-08-10)
 
 
