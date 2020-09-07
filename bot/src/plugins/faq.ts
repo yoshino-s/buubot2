@@ -15,7 +15,7 @@ const faqData = [
   },
   {
     Q: ["四|4", "舍", "地址|位置|怎么去|哪里"],
-    A: `http://${Config.Bot.host}/route`,
+    A: `http://${Config.Bot.host}:${Config.Bot.port}/route`,
   },
 ];
 
