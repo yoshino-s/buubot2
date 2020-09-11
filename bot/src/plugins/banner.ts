@@ -2,8 +2,10 @@ import { ChatMessage, GroupMessage } from "mirai-ts/dist/types/message-type";
 
 import { CommandPermission } from "../command/Permission";
 import { extractTarget, TargetMapStorage } from "../utils";
-import { Args, Bot, Cmd, Msg, On } from "../utils/decorator";
-import { BotNamespace, BotPlugin } from "../bot/Bot";
+import { Args, Bot, Cmd, Msg, On, Tag } from "../utils/decorator";
+import { MiraiBot, BotPlugin } from "../bot/Bot";
+
+@Tag("util")
 export default class BannerPlugin extends BotPlugin {
   banWorkMap = new TargetMapStorage<string[]>("banWord");
   @Cmd({
@@ -33,7 +35,7 @@ export default class BannerPlugin extends BotPlugin {
     return `将对关键词"${args}"解封。现在的封禁词列表：${w.join(",")}`;
   }
   @On("GroupMessage")
-  async onBan(@Msg msg: GroupMessage, @Bot bot: BotNamespace) {
+  async onBan(@Msg msg: GroupMessage, @Bot bot: MiraiBot) {
     const target = extractTarget(msg, false);
     const w = (await this.banWorkMap.get(target)) || [];
     const plain = msg.plain.toLowerCase();

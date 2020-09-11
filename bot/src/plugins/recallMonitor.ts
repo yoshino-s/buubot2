@@ -2,14 +2,15 @@ import { MessageType } from "mirai-ts";
 import { GroupRecallEvent } from "mirai-ts/dist/types/event-type";
 
 import { serialize, unserialize } from "../utils";
-import { BotNamespace, BotPlugin } from "../bot/Bot";
-import { On, Event, Bot } from "../utils/decorator";
+import { MiraiBot, BotPlugin } from "../bot/Bot";
+import { On, Event, Bot, Tag } from "../utils/decorator";
 
 const preventRecallList = new Map<number, string>();
 
+@Tag("util")
 export default class RecallMonitorPlugin extends BotPlugin {
   @On("GroupRecallEvent")
-  async(@Event e: GroupRecallEvent, @Bot bot: BotNamespace) {
+  async(@Event e: GroupRecallEvent, @Bot bot: MiraiBot) {
     const msg = preventRecallList.get(e.messageId);
     if (msg) {
       bot.mirai.api.sendGroupMessage(

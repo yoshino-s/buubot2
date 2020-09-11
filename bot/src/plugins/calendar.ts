@@ -6,7 +6,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
 import { ChatMessage } from "mirai-ts/dist/types/message-type";
 
-import { Args, Cmd, Msg } from "../utils/decorator";
+import { Args, Cmd, Msg, Tag } from "../utils/decorator";
 import { BotPlugin } from "../bot/Bot";
 
 dayjs.extend(utc);
@@ -24,6 +24,7 @@ type Event = {
 
 const format = (d: dayjs.Dayjs) => d.format("MMMD ddd HH:mm");
 
+@Tag("ctf")
 export default class CalendarPlugin extends BotPlugin {
   @Cmd({
     cmd: "calendar",

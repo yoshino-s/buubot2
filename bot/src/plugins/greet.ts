@@ -1,6 +1,6 @@
 import { SwitchCommand } from "../command/Command";
 import { sendMsgQueue, TargetSetStorage } from "../utils";
-import { UseCommand } from "../utils/decorator";
+import { Tag, UseCommand } from "../utils/decorator";
 import { BotPlugin } from "../bot/Bot";
 
 const morningRepeat = {
@@ -13,6 +13,7 @@ const nightRepeat = {
   tz: "Asia/Shanghai",
 };
 
+@Tag("entertainment")
 export default class GreetPlugin extends BotPlugin {
   greetList = new TargetSetStorage("greetList");
 

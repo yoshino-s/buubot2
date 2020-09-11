@@ -1,6 +1,6 @@
 import Axios from "axios";
 
-import { Args, Cmd } from "../utils/decorator";
+import { Args, Cmd, Tag } from "../utils/decorator";
 import { BotPlugin } from "../bot/Bot";
 
 function cusScore(score: number) {
@@ -19,6 +19,7 @@ function cusScore(score: number) {
   return "yyds!";
 }
 
+@Tag("ctf")
 export default class RankPlugin extends BotPlugin {
   @Cmd({
     cmd: "rank",
@@ -35,6 +36,21 @@ export default class RankPlugin extends BotPlugin {
         })
       ).data.message || "Internal Error"
     );
+  }
+  @Cmd({
+    cmd: "list",
+    help: "score aff",
+    verify: (msg, cmd, args) => !!args,
+  })
+  async list(@Args args: string) {
+    return (
+      await Axios.get("https://api.yoshino-s.online/buu/official", {
+        params: {
+          type: "description",
+          aff: args,
+        },
+      })
+    ).data;
   }
   @Cmd({
     cmd: "score",

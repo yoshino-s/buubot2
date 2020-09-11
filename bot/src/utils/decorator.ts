@@ -3,8 +3,14 @@ import "reflect-metadata";
 import { MessageType, EventType } from "mirai-ts";
 
 import MiraiBotCommand, { BotCommandConfig } from "../command/Command";
-import { BotNamespace, BotPlugin } from "../bot/Bot";
+import { MiraiBot as BotClass, BotPlugin } from "../bot/Bot";
 import { CommandPermission } from "../command/Permission";
+
+export function Tag(tag: string): ClassDecorator {
+  return (target) => {
+    Reflect.defineMetadata("tag", tag, target);
+  };
+}
 
 export function On(
   event: EventType.EventType | MessageType.ChatMessageType | "message"
@@ -68,7 +74,7 @@ export const Event: ParameterDecorator = Param("event");
 export const Message = Msg;
 export const Args: ParameterDecorator = Param("args");
 
-function extractCommand(bot: BotNamespace, instance: BotPlugin) {
+function extractCommand(bot: BotClass, instance: BotPlugin) {
   const prototype = Object.getPrototypeOf(instance);
   const methodsNames = Object.getOwnPropertyNames(prototype).filter(
     (item) =>
@@ -113,7 +119,7 @@ function extractCommand(bot: BotNamespace, instance: BotPlugin) {
     );
 }
 
-function extractOn(bot: BotNamespace, instance: BotPlugin) {
+function extractOn(bot: BotClass, instance: BotPlugin) {
   const prototype = Object.getPrototypeOf(instance);
   const methodsNames = Object.getOwnPropertyNames(prototype).filter(
     (item) =>
@@ -147,7 +153,7 @@ function extractOn(bot: BotNamespace, instance: BotPlugin) {
   });
 }
 
-export function use(instance: BotPlugin, bot: BotNamespace) {
+export function use(instance: BotPlugin, bot: BotClass) {
   extractCommand(bot, instance).forEach((i) => bot.register(i));
   extractOn(bot, instance);
   instance.boot?.(bot);

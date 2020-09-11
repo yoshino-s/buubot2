@@ -7,7 +7,7 @@ import {
   TargetSetStorage,
   extractTarget,
 } from "../utils";
-import { On, Event, UseCommand } from "../utils/decorator";
+import { On, Event, UseCommand, Tag } from "../utils/decorator";
 import { SwitchCommand } from "../command/Command";
 import { BotPlugin } from "../bot/Bot";
 
@@ -19,6 +19,7 @@ function similarity(s0: string, s1: string) {
     ) / Math.max(s0.length, s1.length)
   );
 }
+@Tag("entertainment")
 export default class RepeaterPlugin extends BotPlugin {
   msgSet = new Map<number, [string, number]>();
 

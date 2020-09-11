@@ -1,7 +1,6 @@
 import { resolve } from "path";
 
 import Mirai, { MiraiApiHttpConfig, MessageType, EventType } from "mirai-ts";
-import "reflect-metadata";
 import Express from "express";
 import ejs from "ejs";
 import { UI } from "bull-board";
@@ -9,7 +8,6 @@ import log4js, { Logger } from "log4js";
 
 import { Target, unserialize } from "../utils";
 import { use } from "../utils/decorator";
-import { Async } from "../utils/async";
 import BotCommand from "../command/Command";
 import BuiltinPlugin from "../plugins/builtin";
 
@@ -31,26 +29,21 @@ export interface BotConfig {
 
 export abstract class BotPlugin {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  boot(bot: BotNamespace) {
+  boot(bot: MiraiBot) {
     //
   }
 }
 
-export class BotNamespace {
+export class MiraiBot {
   name: string;
   logger: Logger;
   mirai: Mirai;
-  readonly config: BotConfig;
   cmdHooks: BotCommand[] = [];
-  private _enabled = false;
-  parent?: BotNamespace;
-  children: BotNamespace[] = [];
 
-  constructor(mirai: Mirai | MiraiApiHttpConfig, config: BotConfig);
-  constructor(mirai: BotNamespace, name: string);
+  express = Express();
   constructor(
-    mirai: Mirai | MiraiApiHttpConfig | BotNamespace,
-    config: BotConfig | string
+    mirai: Mirai | MiraiApiHttpConfig,
+    public readonly config: BotConfig
   ) {
     if (typeof config !== "string") {
       if (mirai instanceof Mirai) {
@@ -61,11 +54,9 @@ export class BotNamespace {
       this.config = config;
       this.name = "default";
     } else {
-      this.mirai = (mirai as BotNamespace).mirai;
-      this.config = (mirai as BotNamespace).config;
+      this.mirai = (mirai as MiraiBot).mirai;
+      this.config = (mirai as MiraiBot).config;
       this.name = config;
-      this.parent = mirai as BotNamespace;
-      (mirai as BotNamespace).addChild(this);
     }
     this.logger = log4js.getLogger(this.name);
     this.logger.level = "ALL";
@@ -75,15 +66,31 @@ export class BotNamespace {
     listener: (data: Data<T>) => any
   ): void {
     return this.mirai.on(event, (data) => {
-      if (this._enabled) {
-        listener(data);
-      }
+      listener(data);
     });
   }
   async boot() {
+    await this.mirai.link(this.config.account);
+    await this.mirai.axios.post("/config", {
+      sessionKey: this.mirai.sessionKey,
+      cacheSize: 4096,
+      enableWebsocket: true,
+    });
+    this.express.use("/bull", UI);
+    this.express.engine("ejs", (ejs as any).__express);
+    this.express.set("view engine", "ejs");
+    this.express.set("views", resolve(__dirname, "../views"));
+
+    this.mirai.listen();
+    this.express.listen(8080, "0.0.0.0");
+
     this.on("message", (msg) => this.messageHook(msg));
-    this.enable();
-    await Async.forEach(this.children, (child) => child.boot());
+
+    this.register(BuiltinPlugin);
+
+    process.on("beforeExit", () => {
+      this.logger.info("Exiting...");
+    });
   }
   private async messageHook(msg: MessageType.ChatMessage) {
     const plain = msg.plain;
@@ -142,58 +149,11 @@ export class BotNamespace {
       }
     }
   }
-  enable() {
-    this._enabled = true;
-    this.children.forEach((child) => child.enable());
-  }
-  disable() {
-    this._enabled = false;
-    this.children.forEach((child) => child.disable());
-  }
   static getCurrentBot(): MiraiBot {
     if (!currentBot) {
       throw new Error("No current bot!");
     }
     return currentBot;
   }
-  addChild(bot: BotNamespace) {
-    this.children.push(bot);
-  }
 }
 let currentBot: MiraiBot | undefined;
-
-export class MiraiBot extends BotNamespace {
-  cmdHooks: BotCommand[] = [];
-
-  express = Express();
-  constructor(
-    mirai: Mirai | MiraiApiHttpConfig,
-    public readonly config: BotConfig
-  ) {
-    super(mirai, config);
-    currentBot = this;
-  }
-  async boot() {
-    await this.mirai.link(this.config.account);
-    await this.mirai.axios.post("/config", {
-      sessionKey: this.mirai.sessionKey,
-      cacheSize: 4096,
-      enableWebsocket: true,
-    });
-    this.express.use("/bull", UI);
-    this.express.engine("ejs", (ejs as any).__express);
-    this.express.set("view engine", "ejs");
-    this.express.set("views", resolve(__dirname, "../views"));
-
-    this.mirai.listen();
-    this.express.listen(8080, "0.0.0.0");
-
-    await super.boot();
-
-    this.register(BuiltinPlugin);
-
-    process.on("beforeExit", () => {
-      this.logger.info("Exiting...");
-    });
-  }
-}

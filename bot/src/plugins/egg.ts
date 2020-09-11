@@ -1,11 +1,12 @@
 import Axios from "axios";
 
 import { saveImg } from "../utils";
-import { Args, Cmd } from "../utils/decorator";
+import { Args, Cmd, Tag } from "../utils/decorator";
 import { BotPlugin } from "../bot/Bot";
 
 type Ret = { url?: string; path?: string };
 
+@Tag("entertainment")
 export default class EggPlugin extends BotPlugin {
   @Cmd("sucker")
   async sucker() {

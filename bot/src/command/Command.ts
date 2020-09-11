@@ -7,7 +7,7 @@ import {
   Target,
   TargetSetStorage,
 } from "../utils";
-import { BotNamespace } from "../bot/Bot";
+import { MiraiBot } from "../bot/Bot";
 
 import { CommandPermission } from "./Permission";
 
@@ -58,7 +58,7 @@ export default class MiraiBotCommand {
   }
 
   async run(
-    bot: BotNamespace,
+    bot: MiraiBot,
     msg: MessageType.ChatMessage,
     cmd: string,
     args: string

@@ -1,4 +1,4 @@
-import { MiraiBot, BotNamespace } from "./bot/Bot";
+import { MiraiBot } from "./bot/Bot";
 import Config from "./config.json";
 import CmdPlugin from "./plugins/cmd";
 import EggPlugin from "./plugins/egg";
@@ -11,16 +11,14 @@ import RankPlugin from "./plugins/rank";
 import SearchPlugin from "./plugins/search";
 
 const bot = new MiraiBot(Config.API, Config.Bot);
-const entertainment = new BotNamespace(bot, "entertainment");
-const utils = new BotNamespace(bot, "utils");
-entertainment.register(
+bot.register(
   CmdPlugin,
   EggPlugin,
   GreetPlugin,
   RepeaterPlugin,
   RecallMonitorPlugin
 );
-utils.register(BannerPlugin, CalendarPlugin, RankPlugin, SearchPlugin);
+bot.register(BannerPlugin, CalendarPlugin, RankPlugin, SearchPlugin);
 
 async function bootstrap() {
   await bot.boot();

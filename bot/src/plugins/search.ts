@@ -1,7 +1,8 @@
 import Axios from "axios";
 
-import { Cmd, Args } from "../utils/decorator";
+import { Cmd, Args, Tag } from "../utils/decorator";
 import { BotPlugin } from "../bot/Bot";
+@Tag("entertainment")
 export default class SearchPlugin extends BotPlugin {
   @Cmd("search")
   async search(@Args args: string) {

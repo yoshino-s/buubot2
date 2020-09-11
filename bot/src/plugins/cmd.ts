@@ -1,11 +1,12 @@
 import { ChatMessage } from "mirai-ts/dist/types/message-type";
 import { VM } from "vm2";
 
-import { Args, Cmd, Msg } from "../utils/decorator";
+import { Args, Cmd, Msg, Tag } from "../utils/decorator";
 import { BotPlugin } from "../bot/Bot";
 
 import { preventGroupMessageRecall } from "./recallMonitor";
 
+@Tag("util")
 export default class CmdPlugin extends BotPlugin {
   @Cmd("exec")
   async exec(@Msg msg: ChatMessage, @Args args: string) {

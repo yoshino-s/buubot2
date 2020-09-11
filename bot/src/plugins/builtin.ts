@@ -2,20 +2,13 @@ import { ChatMessage } from "mirai-ts/dist/types/message-type";
 
 import { Async } from "../utils";
 import { Args, Bot, Cmd, Msg } from "../utils/decorator";
-import { BotNamespace, BotPlugin } from "../bot/Bot";
+import { MiraiBot, BotPlugin } from "../bot/Bot";
 import {
   CommandPermission,
   permissionInstruction,
 } from "../command/Permission";
-import MiraiBotCommand from "../command/Command";
 
 export default class BuiltinPlugin extends BotPlugin {
-  extractAllCommand(bot: BotNamespace): MiraiBotCommand[] {
-    return bot.cmdHooks.concat(
-      ...bot.children.map((child) => this.extractAllCommand(child))
-    );
-  }
-
   @Cmd({
     cmd: "GroupCmd",
     help:
@@ -32,11 +25,11 @@ Rule:` + permissionInstruction,
   async groupCmd(
     @Msg msg: ChatMessage,
     @Args args: string,
-    @Bot bot: BotNamespace
+    @Bot bot: MiraiBot
   ) {
     if (msg.type === "FriendMessage") return;
     const id = msg.sender.group.id;
-    const c = this.extractAllCommand(bot);
+    const c = bot.cmdHooks;
     if (args === "list")
       return (
         `List of cmd in ${msg.sender.group.name}(${id})\n` +
