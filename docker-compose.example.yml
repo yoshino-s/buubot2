@@ -7,12 +7,10 @@ services:
     ports:
       - 8081:8080
     volumes:
-      - ./mirai/config.txt:/app/config.txt
-      - ./mirai/setting.yml:/app/plugins/MiraiAPIHTTP/setting.yml
-      - ./data/mirai_data:/app/data
-      - ./data/mirai_image:/app/plugins/MiraiAPIHTTP/images
+      - ./data:/app/data
+      - ./logs:/app/logs
   bot:
-    build: ./bot/deploy
+    build: ./deploy
     container_name: mirai_bot
     restart: always
     depends_on:
@@ -21,8 +19,8 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - ./data/mirai_image:/app/images
-      - ./data/bot_data:/app/data
+      - ./data:/app/data
+      - ./logs:/app/logs
   redis:
     image: redis
     container_name: mirai_redis

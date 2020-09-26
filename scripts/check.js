@@ -1,11 +1,12 @@
-'use strict';
-const chalk = require("chalk");
+/* eslint-disable @typescript-eslint/no-var-requires */
+"use strict";
 const child_process = require("child_process");
+
+const chalk = require("chalk");
 
 function checkCmd(cmd, ...args) {
   const ret = child_process.spawnSync(cmd, args);
-  if (ret.status !== 0)
-    return false;
+  if (ret.status !== 0) return false;
   return ret.stdout.toString().trim();
 }
 
@@ -20,12 +21,14 @@ async function main() {
   }
   const docker = checkCmd("docker", "-v");
   if (!docker) {
-    console.log(chalk.red("Docker not found or have no permission to use docker."));
+    console.log(
+      chalk.red("Docker not found or have no permission to use docker.")
+    );
     process.exit(1);
   } else {
     console.log(chalk.green("Docker Version: ") + docker);
   }
-  console.log(chalk.green("Environment OK!"))
+  console.log(chalk.green("Environment OK!"));
 }
 
 main();

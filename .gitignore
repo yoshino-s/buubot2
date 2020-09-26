@@ -5,14 +5,12 @@ yarn.lock
 node_modules
 dist
 bot/deploy/src/*
+deploy/src
 
-mirai/images/*
-
-mirai/config.txt
-bot/src/config.json
-mirai/setting.yml
-docker-compose.yml
-data/*
+*.yml
+!*.example.yml
+data
+logs
 
 redis/data/*
 redis/redis.conf

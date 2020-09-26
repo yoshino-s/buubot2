@@ -40,8 +40,11 @@ If you don't have yarn, install it by `npm install -g yarn`, (or change script b
 
 ```bash
 yarn
-# or use production mode if you only want to deploy it
-# yarn --production
+```
+
+Then modify the `config.example.yml` to `config.yml` and run
+
+```bash
 yarn run config
 yarn run build
 ```

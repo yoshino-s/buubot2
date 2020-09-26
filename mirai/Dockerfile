@@ -2,8 +2,10 @@ FROM openjdk:8-jre-alpine
 
 WORKDIR /app/
 
-COPY entrypoint.sh /
 COPY ./src/ /app/
+COPY entrypoint.sh /
+
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 8080
 
