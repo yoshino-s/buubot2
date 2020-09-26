@@ -1,6 +1,18 @@
 # Changelog
 
 
+## [2.1.0](https://github.com/Yoshino-s/buubot2/compare/v2.0.0...v2.1.0) (2020-09-26)
+
+
+### Features
+
+* **mirai:** update mirai & reconstrcut project structure ([5c63883](https://github.com/Yoshino-s/buubot2/commit/5c63883778dc9587f576fe7de4af725a72cf3512))
+
+
+### Bug Fixes
+
+* **bot:** fix bot structure ([b1f31c7](https://github.com/Yoshino-s/buubot2/commit/b1f31c75784571f3aaf3c52289a9b75d53e04dea))
+
 ## [2.0.0](https://github.com/Yoshino-s/buubot2/compare/v1.0.3...v2.0.0) (2020-09-07)
 
 
