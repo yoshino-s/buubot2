@@ -34,7 +34,7 @@ interface Config {
 }
 
 const config: Config = yaml.parse(
-  fs.readFileSync(resolve(__dirname, "./config.yml")).toString()
+  fs.readFileSync(resolve(__dirname, "../config.yml")).toString()
 );
 
 if (config.remote) {

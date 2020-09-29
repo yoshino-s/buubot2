@@ -10,7 +10,7 @@ export default class BannerPlugin extends BotPlugin {
   banWorkMap = new TargetMapStorage<string[]>("banWord");
   @Cmd({
     cmd: "ban",
-    help: "Usage: ban word",
+    help: "Ban word",
     rule: CommandPermission.admin,
     verify: (msg, cmd, args) => !!args,
   })
@@ -23,7 +23,7 @@ export default class BannerPlugin extends BotPlugin {
   }
   @Cmd({
     cmd: "unban",
-    help: "Usage: unban word",
+    help: "Unban word",
     rule: CommandPermission.admin,
     verify: (msg, cmd, args) => !!args,
   })

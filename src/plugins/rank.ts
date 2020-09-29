@@ -23,7 +23,7 @@ function cusScore(score: number) {
 export default class RankPlugin extends BotPlugin {
   @Cmd({
     cmd: "rank",
-    help: "Usage: rank id",
+    help: "rank id",
     verify: (msg, cmd, args) => !!args,
   })
   async rank(@Args args: string) {

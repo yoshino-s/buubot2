@@ -24,6 +24,14 @@ export default class EggPlugin extends BotPlugin {
       )
     ).data;
   }
+  @Cmd("ylbnb")
+  async ylbnb() {
+    return (
+      await Axios.get(
+        "https://hitokoto.yoshino-s.online/?c=y&encode=text&max_length=1000"
+      )
+    ).data;
+  }
   @Cmd("setu")
   async setu(@Args args: string) {
     const api: Record<string, () => Ret | Promise<Ret>> = {

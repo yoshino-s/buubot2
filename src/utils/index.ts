@@ -1,5 +1,5 @@
 import { execSync } from "child_process";
-import { join, resolve } from "path";
+import { join } from "path";
 import { EventEmitter as EE } from "events";
 
 import Queue from "bull";
