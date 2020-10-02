@@ -9,40 +9,24 @@ A BUUOJ BOT rebuild on mirai (Developing)
 - [Mirai](https://github.com/mamoe/mirai)
 - [mirai-ts](https://github.com/YunYouJun/mirai-ts)
 
-## Project Structure
-
-```
-.
-├── bot                                    front-end of bot
-│   ├── deploy
-│   ├── src
-│   │   ├── bot                            core of bot
-│   │   └── plugins                        plugins of bot
-├── mirai                                  back-end ob bot
-│   ├── config.example.txt                 example config file
-│   ├── data                               data of mirai-core
-│   ├── images                             base dir of mirai-api-http image
-│   ├── setting.yml                        mirai-api-http config file
-│   └── src                                mirai source
-```
-
 ## Dependency Environments
 
 - Docker
 - Docker Compose
 - nodejs
+- Jre
 
 ## Start
 
 ### Config & build
 
-If you don't have yarn, install it by `npm install -g yarn`, (or change script by yourself.
+If you don't have yarn, install it by `npm install -g yarn` before install, (or change script by yourself.
 
 ```bash
 yarn
 ```
 
-Then modify the `config.example.yml` to `config.yml` and run
+Then copy `config.example.yml` to `config.yml` and change the config then run
 
 ```bash
 yarn run config
@@ -61,43 +45,9 @@ docker-compose up -d
 docker-compose logs -f
 ```
 
-## Default Plugins
+## How to write your own plugins
 
-- calendar
-  - Command: `calendar`
-    Show the recent or now competitions
-- cmd
-  - Command: `exec`
-    Give you a chance to try to break the `vm2`
-- egg
-  - Command: `sucker`
-    Teach you how to be a real sucker
-- groupCmdManage
-  - Command `GroupCmd`
-    Set special rule for commands
-    GroupCmd list | (set {cmd} {rule})
-    Rule:
-    * 0b00000001 friend
-    * 0b00000010 group member
-    * 0b00000100 group admin
-    * 0b00001000 group owner
-    * 0b00010000 temp chat
-- monitor
-  - Command: `npm_monitor on|off`
-    Tell you if npm advisories updated
-- rank
-  - Command: `rank id`
-    Tell your rank on BUUOJ
-  - Command: `score id`
-    Tell you that you are lazy dog
-- recallMonitor
-  monitor the recall event and sometimes prevent it
-- repeater
-  repeater
-  repeater
-  repeater
-  repeater
-  repeater
+> TODO
 
 ## Known issue
 
