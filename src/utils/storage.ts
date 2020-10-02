@@ -3,14 +3,15 @@ import { promisify } from "util";
 import redis from "redis";
 
 import { MiraiBot } from "../bot/Bot";
-import config from "../config";
+import { config } from "../config";
 
 import { Async } from "./async";
 
 import { Target } from ".";
 
 const prefix = "mirai_bot:";
-const client = redis.createClient(config.redis);
+let _client: redis.RedisClient;
+const getClient = () => _client ?? (_client = redis.createClient(config.redis));
 
 type Serializer<T> = {
   stringify: (data: T) => string;
@@ -20,6 +21,7 @@ type Serializer<T> = {
 export class Storage<T> {
   readonly name: string;
   _data: T;
+  client = getClient();
   constructor(
     name: string,
     defaultValue: T,
@@ -29,7 +31,7 @@ export class Storage<T> {
     this._data = defaultValue;
   }
   async getData() {
-    const r = await promisify(client.GET).bind(client)(this.name);
+    const r = await promisify(this.client.GET).bind(this.client)(this.name);
     if (r) {
       try {
         this._data = this.serializer.parse(r);
@@ -41,7 +43,7 @@ export class Storage<T> {
   }
   async setData(data: T | Promise<T>) {
     this._data = await data;
-    return await promisify(client.SET).bind(client)(
+    return await promisify(this.client.SET).bind(this.client)(
       this.name,
       this.serializer.stringify(this._data)
     );
@@ -68,7 +70,9 @@ export class SetStorage<T> extends Storage<Set<T>> {
     });
   }
   async getData() {
-    const r = await promisify(client.SMEMBERS).bind(client)(this.name);
+    const r = await promisify(this.client.SMEMBERS).bind(this.client)(
+      this.name
+    );
     if (r) {
       try {
         this._data = new Set(
@@ -85,40 +89,40 @@ export class SetStorage<T> extends Storage<Set<T>> {
     return Promise.all(
       Array.from(this._data).map((v) =>
         promisify(
-          client.SADD as (
+          this.client.SADD as (
             k: string,
             v: string,
             cb: redis.Callback<number>
           ) => boolean
-        ).bind(client)(this.name, this.itemSerializer.stringify(v))
+        ).bind(this.client)(this.name, this.itemSerializer.stringify(v))
       )
     );
   }
 
   async add(v: T) {
     return promisify(
-      client.SADD as (
+      this.client.SADD as (
         s: string,
         k: string,
         cb: redis.Callback<number>
       ) => boolean
     )
-      .bind(client)(this.name, this.itemSerializer.stringify(v))
+      .bind(this.client)(this.name, this.itemSerializer.stringify(v))
       .then(Boolean);
   }
 
   async remove(v: T) {
     return promisify(
-      client.SREM as (
+      this.client.SREM as (
         k: string,
         v: string,
         cb: redis.Callback<number>
       ) => boolean
-    ).bind(client)(this.name, this.itemSerializer.stringify(v));
+    ).bind(this.client)(this.name, this.itemSerializer.stringify(v));
   }
 
   async has(v: T) {
-    return promisify(client.SISMEMBER).bind(client)(
+    return promisify(this.client.SISMEMBER).bind(this.client)(
       this.name,
       this.itemSerializer.stringify(v)
     );
@@ -166,7 +170,7 @@ export class MapStorage<K, V> extends Storage<Map<K, V>> {
     });
   }
   async getData() {
-    const r = await promisify(client.HGETALL).bind(client)(this.name);
+    const r = await promisify(this.client.HGETALL).bind(this.client)(this.name);
     if (r) {
       try {
         this._data = new Map(
@@ -186,13 +190,13 @@ export class MapStorage<K, V> extends Storage<Map<K, V>> {
     return Promise.all(
       Array.from(this._data.entries()).map(([k, v]) =>
         promisify(
-          client.HSET as (
+          this.client.HSET as (
             h: string,
             k: string,
             v: string,
             cb: redis.Callback<number>
           ) => boolean
-        ).bind(client)(
+        ).bind(this.client)(
           this.name,
           this.keySerializer.stringify(k),
           this.valueSerializer.stringify(v)
@@ -203,13 +207,13 @@ export class MapStorage<K, V> extends Storage<Map<K, V>> {
 
   async set(k: K, v: V) {
     return promisify(
-      client.HSET as (
+      this.client.HSET as (
         h: string,
         k: string,
         v: string,
         cb: redis.Callback<number>
       ) => boolean
-    ).bind(client)(
+    ).bind(this.client)(
       this.name,
       this.keySerializer.stringify(k),
       this.valueSerializer.stringify(v)
@@ -217,7 +221,7 @@ export class MapStorage<K, V> extends Storage<Map<K, V>> {
   }
 
   async get(k: K) {
-    const r = await promisify(client.HGET).bind(client)(
+    const r = await promisify(this.client.HGET).bind(this.client)(
       this.name,
       this.keySerializer.stringify(k)
     );
@@ -227,18 +231,18 @@ export class MapStorage<K, V> extends Storage<Map<K, V>> {
 
   async remove(k: K) {
     return promisify(
-      client.HDEL as (
+      this.client.HDEL as (
         k: string,
         v: string,
         cb: redis.Callback<number>
       ) => boolean
-    ).bind(client)(this.name, this.keySerializer.stringify(k));
+    ).bind(this.client)(this.name, this.keySerializer.stringify(k));
   }
 
   async clear() {
     return promisify(
-      client.DEL as (k: string, cb: redis.Callback<number>) => boolean
-    ).bind(client)(this.name);
+      this.client.DEL as (k: string, cb: redis.Callback<number>) => boolean
+    ).bind(this.client)(this.name);
   }
 
   async forEach(cb: ([k, v]: [K, V]) => any) {

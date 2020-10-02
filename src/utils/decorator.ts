@@ -2,7 +2,7 @@
 import "reflect-metadata";
 import { MessageType, EventType } from "mirai-ts";
 
-import MiraiBotCommand, { BotCommandConfig } from "../command/Command";
+import { BotCommand, BotCommandConfig } from "../command/Command";
 import { MiraiBot as BotClass, BotPlugin } from "../bot/Bot";
 import { CommandPermission } from "../command/Permission";
 
@@ -92,7 +92,7 @@ function extractCommand(bot: BotClass, instance: BotPlugin) {
       ) as BotCommandConfig;
       const argList: string[] =
         Reflect.getMetadata("args", prototype, methodName) ?? [];
-      return new MiraiBotCommand(command, (msg, cmd, args) => {
+      return new BotCommand(command, (msg, cmd, args) => {
         const argument = argList.map((i) => {
           switch (i) {
             case "bot":
@@ -112,10 +112,10 @@ function extractCommand(bot: BotClass, instance: BotPlugin) {
       Object.getOwnPropertyNames(instance)
         .filter(
           (item) =>
-            (instance as any)[item] instanceof MiraiBotCommand &&
+            (instance as any)[item] instanceof BotCommand &&
             Reflect.getMetadata("command", instance, item)
         )
-        .map((item) => (instance as any)[item] as MiraiBotCommand)
+        .map((item) => (instance as any)[item] as BotCommand)
     );
 }
 

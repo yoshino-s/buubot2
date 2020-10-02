@@ -8,8 +8,10 @@ import log4js, { Logger } from "log4js";
 
 import { Target, unserialize } from "../utils";
 import { use } from "../utils/decorator";
-import BotCommand from "../command/Command";
-import BuiltinPlugin from "../plugins/builtin";
+import { BotCommand } from "../command/Command";
+import { config as cfg } from "../config";
+
+import BuiltinPlugin from "./builtin.plugin";
 
 declare type Data<
   T extends "message" | EventType.EventType | MessageType.ChatMessageType
@@ -19,7 +21,7 @@ declare type Data<
   ? MessageType.ChatMessageMap[T]
   : MessageType.ChatMessage;
 
-export type BotHook = typeof Mirai.prototype.on;
+type BotHook = typeof Mirai.prototype.on;
 
 export interface BotConfig {
   account: number;
@@ -42,8 +44,11 @@ export class MiraiBot {
 
   express = Express();
   constructor(
-    mirai: Mirai | MiraiApiHttpConfig,
-    public readonly config: BotConfig
+    mirai: Mirai | MiraiApiHttpConfig = cfg.api,
+    public readonly config: BotConfig = {
+      account: cfg.qq.account,
+      ...cfg.bot,
+    }
   ) {
     if (typeof config !== "string") {
       if (mirai instanceof Mirai) {

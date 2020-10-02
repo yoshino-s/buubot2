@@ -1,10 +1,10 @@
-import fs from "fs";
-import { resolve } from "path";
+import { readFileSync } from "fs";
+import { extname } from "path";
 
 import { MiraiApiHttpConfig } from "mirai-ts";
 import yaml from "yaml";
 
-interface Config {
+export interface Config {
   qq: {
     account: number;
     password: string;
@@ -33,20 +33,31 @@ interface Config {
   };
 }
 
-const config: Config = yaml.parse(
-  fs.readFileSync(resolve(__dirname, "../config.yml")).toString()
-);
+export let config: Config;
 
-if (config.remote) {
-  config.redis.host = config.remote.host;
+export function setConfig(cfg: string | Config) {
+  if (typeof cfg === "string") {
+    const file = readFileSync(cfg).toString();
+    const ext = extname(cfg);
+    if (ext === ".json") {
+      config = JSON.parse(file);
+    } else if (ext === ".yaml" || ext === ".yml") {
+      config = yaml.parse(file);
+    } else {
+      throw Error("Unknown config file format, only support json/yaml");
+    }
+  } else {
+    config = cfg;
+  }
+  if (config.remote) {
+    config.redis.host = config.remote.host;
 
-  config.api.host = config.remote.host;
-} else {
-  config.redis.host = "redis";
-  config.redis.port = 6379;
+    config.api.host = config.remote.host;
+  } else {
+    config.redis.host = "redis";
+    config.redis.port = 6379;
 
-  config.api.host = "mirai";
-  config.api.port = 8080;
+    config.api.host = "mirai";
+    config.api.port = 8080;
+  }
 }
-console.log(config);
-export default config;

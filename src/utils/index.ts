@@ -1,5 +1,3 @@
-import { execSync } from "child_process";
-import { join } from "path";
 import { EventEmitter as EE } from "events";
 
 import Queue from "bull";
@@ -8,9 +6,7 @@ import { setQueues } from "bull-board";
 import { MessageType } from "mirai-ts";
 
 import { MiraiBot } from "../bot/Bot";
-import config from "../config";
-
-import { textify } from "./textify";
+import { config } from "../config";
 
 export type Target = {
   id?: number;
@@ -47,22 +43,19 @@ export const queue = <T = any>(name: string) => {
   return queue;
 };
 
-export const sendMsgQueue = queue<{
-  target: Target;
-  msg: string;
-}>("sendMessage");
+let sendMsgQueue: Queue.Queue;
 
-sendMsgQueue.process(async (job) =>
-  MiraiBot.getCurrentBot().send(job.data.target, job.data.msg)
-);
-
-export async function saveImg(url: string, name: string, text?: string) {
-  name = join("data", "MiraiApiHttp/images", name);
-  execSync(`wget "${url}" -O ${name}`);
-  if (text) {
-    await textify(name, join("data", "MiraiApiHttp/images", text));
-  }
-}
+export const getSendMsgQueue = () => {
+  if (!sendMsgQueue)
+    sendMsgQueue = queue<{
+      target: Target;
+      msg: string;
+    }>("sendMessage");
+  sendMsgQueue.process(async (job) =>
+    MiraiBot.getCurrentBot().send(job.data.target, job.data.msg)
+  );
+  return sendMsgQueue;
+};
 
 export type EventEmitter<T> = StrictEventEmitter<EE, T>;
 export type EventEmitterClass<T> = { new (): StrictEventEmitter<EE, T> };
@@ -70,6 +63,5 @@ export type EventEmitterClass<T> = { new (): StrictEventEmitter<EE, T> };
 export * from "./async";
 export * from "./proxy";
 export * from "./storage";
-export * from "./textify";
 export * from "./serialization";
 export * as Decorator from "./decorator";

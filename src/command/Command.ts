@@ -26,7 +26,7 @@ export type CmdHook = (
   args: string
 ) => any;
 
-export default class MiraiBotCommand {
+export class BotCommand {
   config: BotCommandConfig;
   hook: CmdHook;
   specialRules: MapStorage<number, CommandPermission>;
@@ -98,7 +98,7 @@ export default class MiraiBotCommand {
     }
     const res = await this.hook(msg, cmd, args);
     try {
-      if (res === MiraiBotCommand.HelpSymbol) {
+      if (res === BotCommand.HelpSymbol) {
         await msg.reply(unserialize(this.help));
       } else if (res !== undefined) {
         await msg.reply(unserialize(String(res)));
@@ -119,7 +119,7 @@ export default class MiraiBotCommand {
   static readonly HelpSymbol = Symbol("help");
 }
 
-export class SwitchCommand extends MiraiBotCommand {
+export class SwitchCommand extends BotCommand {
   set: TargetSetStorage;
   constructor(
     cmd: string,

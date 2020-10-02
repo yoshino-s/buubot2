@@ -1,3 +1,5 @@
+import { URLSearchParams } from "url";
+
 import { MessageType } from "mirai-ts";
 
 const e = (o: Record<string, any>) => {
@@ -22,11 +24,9 @@ function parse(s: string): MessageType.SingleMessage {
   const idx = s.indexOf(":");
   const o: any = {};
   o.type = s.slice(0, idx);
-  Array.from(new URLSearchParams(s.slice(idx + 1)).entries()).forEach(
-    ([k, v]) => {
-      o[k] = v;
-    }
-  );
+  new URLSearchParams(s.slice(idx + 1)).forEach((v, k) => {
+    o[k] = v;
+  });
   return o;
 }
 
