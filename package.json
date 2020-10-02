@@ -1,8 +1,8 @@
 {
   "name": "mirai-bot",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "A qq bot based on mirai",
-  "main": "./dist/mirai-bot.js",
+  "main": "./dist/index.js",
   "types": "./dist/mirai-bot.d.ts",
   "files": [
     "/dist"
@@ -11,10 +11,9 @@
   "author": "Yoshino-s <yoshino.prog@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "webpack",
-    "clean": "rm -rf dist",
+    "build": "rm -rf dist && tsc && dts-bundle --name mirai-bot --main dist/index.d.ts --removeSource --out mirai.d.ts",
     "lint": "eslint . --ext .js,.ts,.json --fix",
-    "prepublish": "yarn run lint && yarn run build"
+    "prepublish": "yarn lint && yarn build"
   },
   "dependencies": {
     "axios": "^0.20.0",
@@ -46,10 +45,8 @@
     "@types/ws": "^7.2.5",
     "@typescript-eslint/eslint-plugin": "^4.3.0",
     "@typescript-eslint/parser": "^4.3.0",
-    "clean-webpack-plugin": "^3.0.0",
     "conventional-changelog-cli": "^2.0.34",
     "cz-conventional-changelog": "3.3.0",
-    "dts-bundle-webpack": "^1.0.2",
     "eslint": "^7.7.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.22.0",
@@ -59,11 +56,7 @@
     "reflect-metadata": "^0.1.13",
     "standard-version": "^9.0.0",
     "strict-event-emitter-types": "^2.0.0",
-    "terser-webpack-plugin": "^4.2.2",
-    "ts-loader": "^8.0.4",
-    "typescript": "^4.0.3",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12"
+    "typescript": "^4.0.3"
   },
   "config": {
     "commitizen": {
