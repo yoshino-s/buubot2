@@ -1,13 +1,20 @@
 import { ChatMessage, GroupMessage } from "mirai-ts/dist/types/message-type";
-
-import { CommandPermission } from "../command/Permission";
-import { extractTarget, TargetMapStorage } from "../utils";
-import { Args, Bot, Cmd, Msg, On, Tag } from "../utils/decorator";
-import { MiraiBot, BotPlugin } from "../bot/Bot";
+import {
+  CommandPermission,
+  Args,
+  Bot,
+  Cmd,
+  Msg,
+  On,
+  Tag,
+  MiraiBot,
+  BotPlugin,
+} from "@mirai-bot/core";
+import { extractTarget, MapStorage, Target } from "@mirai-bot/utils";
 
 @Tag("util")
 export default class BannerPlugin extends BotPlugin {
-  banWorkMap = new TargetMapStorage<string[]>("banWord");
+  banWorkMap = new MapStorage<Target, string[]>("banWord");
   @Cmd({
     cmd: "ban",
     help: "Ban word",

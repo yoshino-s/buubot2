@@ -4,8 +4,3 @@ node_modules
 dist
 # don't lint nyc coverage output
 coverage
-mirai
-data
-logs
-deploy
-redis

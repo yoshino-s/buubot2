@@ -1,7 +1,7 @@
 # QQ Account Config
 qq:
   account: 123456789
-  password: 123456789
+  password: "123456789"
 # Bot Config
 bot:
   # Privilege account, who has the highest authority
@@ -15,20 +15,20 @@ bot:
 # Redis Config
 redis:
   password: password
-  port: 6379
+  port: 6379 # optional, expose the redis port
 
 # Web Interface
 web:
   host: localhost
-  port: 8080
+  port: 8080 # optional, expose the web port
 
 # MiraiAPTHttp Config
 api:
-  authKey: 1234567890
-  port: 8081 # Optional, For the expose port
+  authKey: "1234567890"
+  port: 8081 # Optional, expose the api port
 
 # remote:
-#   host: 101.200.191.30
+#   host: localhost
 
 # Proxy
 # proxy:

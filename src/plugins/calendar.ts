@@ -5,9 +5,7 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
 import { ChatMessage } from "mirai-ts/dist/types/message-type";
-
-import { Args, Cmd, Msg, Tag } from "../utils/decorator";
-import { BotPlugin } from "../bot/Bot";
+import { BotPlugin, Args, Cmd, Msg, Tag } from "@mirai-bot/core";
 
 dayjs.extend(utc);
 dayjs.extend(localizedFormat);

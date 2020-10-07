@@ -1,8 +1,7 @@
 import Axios from "axios";
+import { BotPlugin, Args, Cmd, Tag } from "@mirai-bot/core";
 
 import { saveImg } from "../utils";
-import { Args, Cmd, Tag } from "../utils/decorator";
-import { BotPlugin } from "../bot/Bot";
 
 type Ret = { url?: string; path?: string };
 

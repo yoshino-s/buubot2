@@ -1,15 +1,20 @@
 import { diffChars } from "diff";
 import { ChatMessage, GroupMessage } from "mirai-ts/dist/types/message-type";
-
+import {
+  On,
+  Event,
+  UseCommand,
+  Tag,
+  SwitchCommand,
+  BotPlugin,
+} from "@mirai-bot/core";
 import {
   serialize,
   unserialize,
-  TargetSetStorage,
+  SetStorage,
   extractTarget,
-} from "../utils";
-import { On, Event, UseCommand, Tag } from "../utils/decorator";
-import { SwitchCommand } from "../command/Command";
-import { BotPlugin } from "../bot/Bot";
+  Target,
+} from "@mirai-bot/utils";
 
 function similarity(s0: string, s1: string) {
   return (
@@ -41,7 +46,7 @@ export default class RepeaterPlugin extends BotPlugin {
     this.msgSet.set(msg.sender.group.id, p);
   }
 
-  preventFlashImage = new TargetSetStorage("preventFlashImage");
+  preventFlashImage = new SetStorage<Target>("preventFlashImage");
 
   @UseCommand
   preventFlashImageCmd = new SwitchCommand(

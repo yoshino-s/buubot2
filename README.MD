@@ -1,61 +1,78 @@
-# BUU BOT V2
-
-[![time tracker](https://wakatime.com/badge/github/Yoshino-s/buubot2.svg)](https://wakatime.com/badge/github/Yoshino-s/buubot2)
-
-A BUUOJ BOT rebuild on mirai (Developing)
-
-## Based on:
-
-- [Mirai](https://github.com/mamoe/mirai)
-- [mirai-ts](https://github.com/YunYouJun/mirai-ts)
-
-## Dependency Environments
-
-- Docker
-- Docker Compose
-- nodejs
-- Jre
+# Mirai Bot
 
 ## Start
 
-### Config & build
-
-If you don't have yarn, install it by `npm install -g yarn` before install, (or change script by yourself.
+Install cli tool
 
 ```bash
-yarn
+yarn global add @mirai-bot/cli
 ```
 
-Then copy `config.example.yml` to `config.yml` and change the config then run
+Create a project
 
 ```bash
-yarn run config
-yarn run build
+mirai-bot new --name bot
 ```
 
-### Start
+## Config
+
+Config the bot
+
+copy `config.example.yaml` to `config.yml`
+
+and change the config
+
+## Build & Start
 
 ```bash
-docker-compose up -d
+mirai-bot build
 ```
-
-### check logs
 
 ```bash
-docker-compose logs -f
+mirai-bot start -d
 ```
 
-## How to write your own plugins
+## Other issues
 
-> TODO
+### Login fail
 
-## Known issue
+If you use your account on this device first time, it may have some problem when login. Please use 
 
-- In the first build or in some cases, the login will fail and you need to enter the verification code.
-- Because Mirai is in the development stage, there may be bugs such as not receiving information
+```bash
+mirai-bot interactive
+```
 
-If you find some issue about the bot, see the issues below. Maybe you can find some useful information.
+to start a interactive mirai instance, follow the steps to login manually
 
-- [mirai-core](https://github.com/mamoe/mirai/issues)
-- [mirai-api-http](https://github.com/project-mirai/mirai-api-http/issues)
-- [mirai-ts](https://github.com/YunYouJun/mirai-ts/issues)
+### development
+
+You can use an existing bot instance and attach it to develop your plugin faster
+
+Setup a full bot docker (including `mirai` and `redis`) and expose all the port
+
+And use the same config file in your development environment
+
+Add
+
+```yaml
+remote:
+  host: 101.200.191.30
+```
+
+in the `config.yml` of development environment
+
+and start with
+
+```bash
+mirai-bot start --dev
+```
+
+Also you can use 
+
+```bash
+mirai-bot plugin [name]
+```
+
+to add a new plugin.
+
+> TODO: How to write a plugin

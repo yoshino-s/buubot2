@@ -21,6 +21,7 @@ services:
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs
+      - ./config.yml:/app/config.yml
   redis:
     image: redis
     container_name: mirai_redis

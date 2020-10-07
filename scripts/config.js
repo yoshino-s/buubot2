@@ -29,8 +29,6 @@ function modifyConfig(
 
 const config = yaml.parse(fs.readFileSync("config.yml").toString());
 
-console.log(config);
-
 // Redis
 
 modifyConfig("redis/redis.conf", (s) =>

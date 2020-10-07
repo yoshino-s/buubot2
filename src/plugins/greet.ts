@@ -1,7 +1,7 @@
-import { SwitchCommand } from "../command/Command";
-import { sendMsgQueue, TargetSetStorage } from "../utils";
-import { Tag, UseCommand } from "../utils/decorator";
-import { BotPlugin } from "../bot/Bot";
+import { SwitchCommand, Tag, UseCommand, BotPlugin } from "@mirai-bot/core";
+import { SetStorage, Target } from "@mirai-bot/utils";
+
+import { getSendMsgQueue } from "../utils";
 
 const morningRepeat = {
   cron: "0 7 * * *",
@@ -15,7 +15,7 @@ const nightRepeat = {
 
 @Tag("entertainment")
 export default class GreetPlugin extends BotPlugin {
-  greetList = new TargetSetStorage("greetList");
+  greetList = new SetStorage<Target>("greetList");
 
   @UseCommand
   greet = new SwitchCommand(
@@ -24,14 +24,14 @@ export default class GreetPlugin extends BotPlugin {
     false,
     (target, status) => {
       if (status) {
-        sendMsgQueue.add(
+        getSendMsgQueue().add(
           { target: target, msg: "早上好" },
           {
             repeat: morningRepeat,
             jobId: `greet:morning:${JSON.stringify(target)}`,
           }
         );
-        sendMsgQueue.add(
+        getSendMsgQueue().add(
           { target: target, msg: "晚上好" },
           {
             repeat: nightRepeat,
@@ -39,11 +39,11 @@ export default class GreetPlugin extends BotPlugin {
           }
         );
       } else {
-        sendMsgQueue.removeRepeatable({
+        getSendMsgQueue().removeRepeatable({
           ...morningRepeat,
           jobId: `greet:morning:${JSON.stringify(target)}`,
         });
-        sendMsgQueue.removeRepeatable({
+        getSendMsgQueue().removeRepeatable({
           ...nightRepeat,
           jobId: `greet:night:${JSON.stringify(target)}`,
         });

@@ -1,7 +1,5 @@
 import Axios from "axios";
-
-import { Args, Cmd, Tag } from "../utils/decorator";
-import { BotPlugin } from "../bot/Bot";
+import { Args, Cmd, Tag, BotPlugin } from "@mirai-bot/core";
 
 function cusScore(score: number) {
   if (score <= 1000) {

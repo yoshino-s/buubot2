@@ -1,4 +1,6 @@
-import { MiraiBot } from "./bot/Bot";
+import Bot from "@mirai-bot/core";
+import { setConfig } from "@mirai-bot/config";
+
 import CmdPlugin from "./plugins/cmd";
 import EggPlugin from "./plugins/egg";
 import GreetPlugin from "./plugins/greet";
@@ -8,19 +10,10 @@ import BannerPlugin from "./plugins/banner";
 import CalendarPlugin from "./plugins/calendar";
 import RankPlugin from "./plugins/rank";
 import SearchPlugin from "./plugins/search";
-import config from "./config";
+import { bootstrap } from "./bot.bootstrap";
 
-const bot = new MiraiBot(
-  {
-    ...config.api,
-    enableWebsocket: true,
-  },
-  {
-    account: config.qq.account,
-    commandPrefix: config.bot.commandPrefix,
-    privilege: config.bot.privilege,
-  }
-);
+setConfig("config.yml");
+const bot = new Bot();
 bot.register(
   CmdPlugin,
   EggPlugin,
@@ -29,13 +22,4 @@ bot.register(
   RecallMonitorPlugin
 );
 bot.register(BannerPlugin, CalendarPlugin, RankPlugin, SearchPlugin);
-
-async function bootstrap() {
-  await bot.boot();
-}
-
-process.on("unhandledRejection", (err) => {
-  console.log(err);
-});
-
-bootstrap();
+bootstrap(bot);

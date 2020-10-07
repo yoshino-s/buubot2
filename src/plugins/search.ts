@@ -1,7 +1,6 @@
 import Axios from "axios";
+import { Cmd, Args, Tag, BotPlugin } from "@mirai-bot/core";
 
-import { Cmd, Args, Tag } from "../utils/decorator";
-import { BotPlugin } from "../bot/Bot";
 @Tag("entertainment")
 export default class SearchPlugin extends BotPlugin {
   @Cmd("search")
