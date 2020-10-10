@@ -15,14 +15,14 @@ export async function saveImg(url: string, name: string, text?: string) {
   }
 }
 
-let sendMsgQueue: Queue;
+let sendMsgQueue: Queue<{
+  target: Target;
+  msg: string;
+}>;
 
 export function getSendMsgQueue() {
   if (!sendMsgQueue) {
-    sendMsgQueue = queue<{
-      target: Target;
-      msg: string;
-    }>("sendMessage");
+    sendMsgQueue = queue("sendMessage");
 
     sendMsgQueue.process(async (job) =>
       MiraiBot.getCurrentBot().send(job.data.target, job.data.msg)
