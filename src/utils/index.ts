@@ -7,7 +7,7 @@ import { Queue } from "bull";
 
 import { textify } from "./textify";
 
-export async function saveImg(url: string, name: string, text?: string) {
+export async function saveImg(url: string, name: string, text?: boolean) {
   name = join("data", "MiraiApiHttp/images", name);
   execSync(`wget "${url}" -O ${name}`, {
     stdio: "inherit",

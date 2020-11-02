@@ -19,7 +19,7 @@
   "dependencies": {
     "@mirai-bot/cli": "^2.1.0",
     "@mirai-bot/config": "^2.1.1",
-    "@mirai-bot/core": "^2.1.0",
+    "@mirai-bot/core": "^2.1.1",
     "@mirai-bot/utils": "^2.1.1",
     "dayjs": "^1.9.1",
     "diff": "^4.0.2",

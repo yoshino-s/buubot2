@@ -31,7 +31,10 @@ export default class EggPlugin extends BotPlugin {
       )
     ).data;
   }
-  @Cmd("setu")
+  @Cmd({
+    cmd: "setu",
+    workers: 4,
+  })
   async setu(@Args args: string) {
     const api: Record<string, () => Ret | Promise<Ret>> = {
       a: () => ({
@@ -43,7 +46,7 @@ export default class EggPlugin extends BotPlugin {
         await saveImg(
           "https://uploadbeta.com/api/pictures/random/?key=%E6%8E%A8%E5%A5%B3%E9%83%8E",
           "setu",
-          "setu.png"
+          true
         );
         return { path: "setu.png" };
       },
