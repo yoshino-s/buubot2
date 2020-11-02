@@ -9,9 +9,11 @@ import { textify } from "./textify";
 
 export async function saveImg(url: string, name: string, text?: string) {
   name = join("data", "MiraiApiHttp/images", name);
-  execSync(`wget "${url}" -O ${name}`);
+  execSync(`wget "${url}" -O ${name}`, {
+    stdio: "inherit",
+  });
   if (text) {
-    await textify(name, join("data", "MiraiApiHttp/images", text));
+    await textify(name, name);
   }
 }
 
