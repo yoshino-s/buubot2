@@ -33,7 +33,6 @@ export default class EggPlugin extends BotPlugin {
   }
   @Cmd({
     cmd: "setu",
-    workers: 4,
   })
   async setu(@Args args: string) {
     const api: Record<string, () => Ret | Promise<Ret>> = {
